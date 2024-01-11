@@ -1,0 +1,16 @@
+{
+    "deepscan.enable": true,
+    "editor.defaultFormatter": "ms-python.pylint",
+    // "editor.defaultFormatter": "ms-python.autopep8",
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter"
+        // "editor.defaultFormatter": "ms-python.autopep8"
+   },
+    "cSpell.words": [
+        "cnts",
+        "fext",
+        "kmeans",
+        "linalg"
+    ],
+    "pylint.args": ["--generated-members=cv2.*"]
+}
