@@ -14,7 +14,7 @@ from matplotlib import pyplot as plt
 
 
 MAX_DISTANCE = 99999
-SMALL_CONTOUR_AREA_OF_CHROMO = 10
+SMALL_CONTOUR_AREA_4_CHROMO = 10
 WRAPPER_SIZE_4_CHROMO_TOUCH_BORDER = 400
 
 
@@ -50,39 +50,39 @@ def dilate_with_kernel(img, kernel=None, iterations=1):
     return cv2.dilate(img, kernel, iterations=iterations)
 
 
-def gaussian_blur_with_ksize(img, ksize=5, sigma=5):
+def gaussian_blur_with_kernel_size(img, kernel_size=5, sigma=5):
     """高斯模糊
     Args:
         img (numpy ndarray): 需要高斯模糊的图片
-        ksize (int): 高斯模糊的核大小,默认为5
+        kernel_size (int): 高斯模糊的核大小,默认为5
         sigma (int): 高斯模糊的标准差,默认为5
     Returns:
         Image (numpy ndarray): 处理后的图片
     """
-    return cv2.GaussianBlur(img, (ksize, ksize), sigma)
+    return cv2.GaussianBlur(img, (kernel_size, kernel_size), sigma)
 
 
-def median_blur_with_ksize(img, ksize=3):
+def median_blur_with_kernel_size(img, kernel_size=3):
     """中值模糊
     Args:
         img (numpy ndarray): 需要高斯模糊的图片
-        ksize (int): 高斯模糊的核大小,默认为5
+        kernel_size (int): 高斯模糊的核大小,默认为5
         sigma (int): 高斯模糊的标准差,默认为5
     Returns:
         Image (numpy ndarray): 处理后的图片
     """
-    return cv2.medianBlur(img, ksize)
+    return cv2.medianBlur(img, kernel_size)
 
 
-def avg_blur_with_ksize(img, ksize=3):
+def avg_blur_with_kernel_size(img, kernel_size=3):
     """平均模糊
     Args:
         img (numpy ndarray): 需要高斯模糊的图片
-        ksize (int): 高斯模糊的核大小,默认为5
+        kernel_size (int): 高斯模糊的核大小,默认为5
     Returns:
         Image (numpy ndarray): 处理后的图片
     """
-    return cv2.blur(img, (ksize, ksize))
+    return cv2.blur(img, (kernel_size, kernel_size))
 
 
 def gaussian_blur_with_kernel(img, kernel=None, ddepth=-1):
@@ -90,8 +90,7 @@ def gaussian_blur_with_kernel(img, kernel=None, ddepth=-1):
     Args:
         img (numpy ndarray): 需要处理的图片
         kernel (numpy ndarray): 指定卷积核. 默认为None. 如果为None,则使用默认的核
-        ddepth (int, optional): desired depth of the destination image, see combinations.
-        Defaults to -1. when ddepth=-1, the output image will have the same depth as the source
+        ddepth (int, optional): desired depth of the destination image, see combinations. Defaults to -1. when ddepth=-1, the output image will have the same depth as the source
     Returns:
         Image (numpy ndarray): 处理后的图片
     """
@@ -195,7 +194,13 @@ def normalization_with_contours_mask(img, contours, norm_alpha, norm_beta):
     values = gray_img[loc]
 
     norm_values = cv2.equalizeHist(values)
-    norm_values = cv2.normalize(norm_values, dst=None, alpha=norm_alpha, beta=norm_beta, norm_type=cv2.NORM_MINMAX)
+    norm_values = cv2.normalize(
+        norm_values,
+        dst=None,
+        alpha=norm_alpha,
+        beta=norm_beta,
+        norm_type=cv2.NORM_MINMAX,
+    )
 
     norm_img = gray_img.copy()
     for i, coord in enumerate(zip(loc[0], loc[1])):
@@ -220,7 +225,7 @@ def remove_img_border(img, up, down, left, right):
     dst_img = img.copy()
     (img_h, img_w) = dst_img.shape[:2]
 
-    return dst_img[up : img_h - down, left : img_w - right]
+    return dst_img[up: img_h - down, left: img_w - right]
 
 
 def get_bkg_color(img):
@@ -374,7 +379,7 @@ def find_external_contours(img, bin_thresh=None):
     return contours
 
 
-### 找外轮廓
+# 找外轮廓
 def find_external_contours_en(
     img,
     bin_thresh=-1,
@@ -421,7 +426,7 @@ def find_external_contours_en(
     contours, _ = cv2.findContours(bin_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     return contours, dst_bin_thresh
-    ### END of find_external_contours_en
+    # END of find_external_contours_en
 
 
 def find_external_contours_with_opening(img, bin_thresh=None):
@@ -776,7 +781,7 @@ def crop_img_from_mask(ori_img, mask_img, bin_thresh=240):
         new_contours = [
             cnt
             for cnt in new_contours
-            if cv2.contourArea(cnt) > SMALL_CONTOUR_AREA_OF_CHROMO
+            if cv2.contourArea(cnt) > SMALL_CONTOUR_AREA_4_CHROMO
         ]
 
     # 把染色体抠出来形成小图
@@ -1023,7 +1028,6 @@ def chromo_stand_up_thru_skeleton(img, dbg=False):
 
 
 def chromo_stand_up(img, dbg=False):
-
     return chromo_stand_up_thru_skeleton(img=img, dbg=dbg)
 
 
@@ -1279,7 +1283,12 @@ def metafer_img_clean(
     return dst_img
 
 
-def _isCellLikeCircle(cnt, small_contour_area, circle_ratio_for_small_contour, circle_ratio_for_big_contour):
+def _isCellLikeCircle(
+    cnt,
+    small_contour_area,
+    circle_ratio_for_small_contour,
+    circle_ratio_for_big_contour,
+):
     """判断轮廓是否是细胞
 
     Args:
@@ -1296,7 +1305,9 @@ def _isCellLikeCircle(cnt, small_contour_area, circle_ratio_for_small_contour, c
     minECArea = pi * (radius**2)
     circle_ratio = area / minECArea
 
-    return (area < small_contour_area and circle_ratio > circle_ratio_for_small_contour) or (area >= small_contour_area and circle_ratio > circle_ratio_for_big_contour)
+    return (
+        area < small_contour_area and circle_ratio > circle_ratio_for_small_contour
+    ) or (area >= small_contour_area and circle_ratio > circle_ratio_for_big_contour)
 
 
 # 判断轮廓是否触及图片边界
@@ -1345,7 +1356,7 @@ def opening(img, kernel=None, iterations=1):
 
     Args:
         img (numpy ndarray): 需要去除背景噪点图片
-        ksize (numpy ndarray): 开运算的核大小,为奇数3,5,7,9
+        kernel_size (numpy ndarray): 开运算的核大小,为奇数3,5,7,9
 
     Returns:
         numpy ndarray: 经过开运算后的图片
@@ -1360,7 +1371,7 @@ def closing(img, kernel=None, iterations=1):
 
     Args:
         img (numpy ndarray): 需要去除背景噪点图片
-        ksize (numpy ndarray): 开运算的核大小,为奇数3,5,7,9
+        kernel_size (numpy ndarray): 开运算的核大小,为奇数3,5,7,9
 
     Returns:
         numpy ndarray: 经过开运算后的图片
@@ -1560,7 +1571,7 @@ class Metaphaser:
         open_iterations=1,
         close_kernel=np.ones((5, 5), np.uint8),
         close_iterations=1,
-        gauss_ksize=(5, 5),
+        gauss_kernel_size=(5, 5),
         tiny_contour_area=100,
         small_contour_area=700,
         circle_ratio_for_big_contour=0.69,
@@ -1571,14 +1582,14 @@ class Metaphaser:
         meta_img_w=1280,
         border_color1=(254, 254, 254),
         border_color2=(0, 0, 0),
-        label_zone_h=0, # 17
-        label_zone_w=0, # 38
+        label_zone_h=0,  # 17
+        label_zone_w=0,  # 38
         chromo_size_gain=1,
         sharpen_or_not=False,
         ikaros_like_or_not=False,
         img_size_norm_or_not=True,
         just_fit_all_chromo_or_not=False,
-        bin_thresh_calib_param=5, # 尽量保留染色体的随体
+        bin_thresh_calib_param=5,  # 尽量保留染色体的随体
         contour_smoothy=False,
         contour_smoothy_param=0.002,
         normalization=True,
@@ -1595,7 +1606,7 @@ class Metaphaser:
             open_iterations (int, optional): 开运算的迭代次数. Defaults to 1.
             close_kernel (int, optional): 闭运算的核. Defaults to np.ones((5, 5), np.uint8).
             close_iterations (int, optional): 开运算的迭代次数. Defaults to 1.
-            gauss_ksize (tuple, optional): 高斯模糊的核. Defaults to (5, 5).
+            gauss_kernel_size (tuple, optional): 高斯模糊的核. Defaults to (5, 5).
             tiny_contour_area (int, optional): 微小杂质轮廓的面积阈值. Defaults to 100.
             small_contour_area (int, optional): 小轮廓的面积阈值,小于该阈值的为小轮廓,比如21号,22号染色体. Defaults to 700.
             circle_ratio_for_big_contour (float, optional): 大轮廓的类圆率阈值,大于该阈值的轮廓被判定为非染色体. Defaults to 0.69.
@@ -1627,7 +1638,7 @@ class Metaphaser:
         self.open_iterations = open_iterations
         self.close_kernel = close_kernel
         self.close_iterations = close_iterations
-        self.gauss_ksize = gauss_ksize
+        self.gauss_kernel_size = gauss_kernel_size
         self.tiny_contour_area = tiny_contour_area
         self.small_contour_area = small_contour_area
         self.circle_ratio_for_big_contour = circle_ratio_for_big_contour
@@ -1690,7 +1701,7 @@ class Metaphaser:
 
         # 求染色体轮廓
         # 高斯模糊让求出来的轮廓更加平滑
-        ori_clean_gauss_img = cv2.GaussianBlur(ori_clean_img, self.gauss_ksize, 0)
+        ori_clean_gauss_img = cv2.GaussianBlur(ori_clean_img, self.gauss_kernel_size, 0)
 
         # 灰化
         gray_img = cv2.cvtColor(ori_clean_gauss_img, cv2.COLOR_BGR2GRAY)
@@ -1698,7 +1709,9 @@ class Metaphaser:
         # 二值化
         # 获取自适应的二值化阈值
         if self.bin_thresh_calib_param == 0:
-            self.bin_thresh, bin_img = new_fn = fn.split(".")[0] + "_rmbk.png"(gray_img, 0, 255, cv2.THRESH_BINARY_INV+cv2.THRESH_TRIANGLE)
+            self.bin_thresh, bin_img = cv2.threshold(
+                gray_img, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_TRIANGLE
+            )
         else:
             bin_thresh, _ = cv2.threshold(
                 gray_img, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_TRIANGLE
@@ -1709,7 +1722,9 @@ class Metaphaser:
             else:
                 self.bin_thresh = bin_thresh
 
-            _, bin_img = cv2.threshold(gray_img, self.bin_thresh, 255, cv2.THRESH_BINARY_INV)
+            _, bin_img = cv2.threshold(
+                gray_img, self.bin_thresh, 255, cv2.THRESH_BINARY_INV
+            )
 
         # 开运算,去背景噪点
         bin_open_img = opening(
@@ -1733,14 +1748,23 @@ class Metaphaser:
 
         # 去细胞
         contours = [
-            cnt for cnt in contours if not _isCellLikeCircle(cnt, self.small_contour_area, self.circle_ratio_for_small_contour, self.circle_ratio_for_big_contour)
+            cnt
+            for cnt in contours
+            if not _isCellLikeCircle(
+                cnt,
+                self.small_contour_area,
+                self.circle_ratio_for_small_contour,
+                self.circle_ratio_for_big_contour,
+            )
         ]
 
         # 去接触边界的大轮廓
         contours = [
             cnt
             for cnt in contours
-            if not _isNoneChromoObjTouchBorder(bin_open_close_img.shape, cnt, self.border_width)
+            if not _isNoneChromoObjTouchBorder(
+                bin_open_close_img.shape, cnt, self.border_width
+            )
         ]
         # contours = [
         #     cnt
@@ -1750,7 +1774,12 @@ class Metaphaser:
 
         # 轮廓平滑
         if self.contour_smoothy:
-            contours = [cv2.approxPolyDP(cnt, self.contour_smoothy_param * cv2.arcLength(cnt, True), True) for cnt in contours]
+            contours = [
+                cv2.approxPolyDP(
+                    cnt, self.contour_smoothy_param * cv2.arcLength(cnt, True), True
+                )
+                for cnt in contours
+            ]
 
         # 生成有效轮廓掩码图
         mask = np.zeros(ori_clean_img.shape, np.uint8)
@@ -1763,7 +1792,9 @@ class Metaphaser:
         # 规定化
         # 自适应直方图均衡+归一化
         if self.normalization:
-            dst_img = normalization_with_contours_mask(dst_img, contours, self.norm_alpha, self.norm_beta)
+            dst_img = normalization_with_contours_mask(
+                dst_img, contours, self.norm_alpha, self.norm_beta
+            )
 
         # 规定化
         # 染色体放大
