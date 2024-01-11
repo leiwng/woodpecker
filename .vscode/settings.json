@@ -23,6 +23,7 @@
         "linalg",
         "Metaphaser",
         "MINMAX",
+        "npint",
         "orgby",
         "removebackground",
         "rmbk",

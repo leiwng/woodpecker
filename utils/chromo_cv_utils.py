@@ -321,12 +321,12 @@ def draw_external_contours_with_idx_label(
     canvas = img.copy()
     cv2.drawContours(canvas, contours, -1, contour_color, contour_thickness)
     for i, cnt in enumerate(contours):
-        minAR = cv2.minAreaRect(cnt)
-        rectCnt = np.int64(cv2.boxPoints(minAR))
+        min_area_rect = cv2.minAreaRect(cnt)
+        min_area_rect = np.int64(cv2.boxPoints(min_area_rect))
         cv2.putText(
             canvas,
             f"{i}",
-            rectCnt[0],
+            min_area_rect[0],
             cv2.FONT_HERSHEY_SIMPLEX,
             0.6,
             contour_idx_color,
@@ -378,7 +378,7 @@ def find_external_contours(img, bin_thresh=None):
 def find_external_contours_en(
     img,
     bin_thresh=-1,
-    type=cv2.THRESH_BINARY_INV + cv2.THRESH_TRIANGLE,
+    bin_type=cv2.THRESH_BINARY_INV + cv2.THRESH_TRIANGLE,
     bin_thresh_adjustment=-15,
 ):
     """寻找图像中物体的外部轮廓功能增强版
@@ -386,7 +386,7 @@ def find_external_contours_en(
     Args:
         img (numpy ndarray): 需要找物体外部轮廓的图像
         bin_thresh (np.uint8, optional): 图像二值化阈值. Defaults to -1, 使用type参数指定的自适应阈值方法
-        type (int, optional): 二值化采用的类型. Defaults to cv2.THRESH_BINARY_INV+cv2.THRESH_TRIANGLE.
+        bin_type (int, optional): 二值化采用的类型. Defaults to cv2.THRESH_BINARY_INV+cv2.THRESH_TRIANGLE.
         bin_thresh_adjustment (int, optional): 使用自适应阈值时需要调整的值. Defaults to -15.
 
     Returns:
@@ -403,17 +403,17 @@ def find_external_contours_en(
     elif bin_thresh == -1:
         # 使用自适应阈值进行二值化
         if (
-            type == cv2.THRESH_BINARY_INV + cv2.THRESH_TRIANGLE
+            bin_type == cv2.THRESH_BINARY_INV + cv2.THRESH_TRIANGLE
             and bin_thresh_adjustment != 0
             and tmp_bin_thresh + bin_thresh_adjustment > 0
         ):
-            tmp_bin_thresh, _ = cv2.threshold(gray_img, 0, 255, type)
+            tmp_bin_thresh, _ = cv2.threshold(gray_img, 0, 255, bin_type)
             tmp_bin_thresh = tmp_bin_thresh + bin_thresh_adjustment
             dst_bin_thresh, bin_img = cv2.threshold(
                 gray_img, tmp_bin_thresh, 255, cv2.THRESH_BINARY_INV
             )
         else:
-            dst_bin_thresh, bin_img = cv2.threshold(gray_img, 0, 255, type)
+            dst_bin_thresh, bin_img = cv2.threshold(gray_img, 0, 255, bin_type)
     else:
         raise ValueError("func:find_external_contours_en,bin_thresh参数错误")
 
@@ -456,18 +456,18 @@ def get_contour_info_list(contours):
         contours (numpy ndarray): 轮廓数据列表
 
     Returns:
-        list of dict: 轮廓信息列表,比如:[{'cnt':轮廓数据, 'area': 轮廓面积, 'minAR': 轮廓最小外接矩形, 'minARarea': 轮廓最小外接矩形面积, 'rectCnt': 最小外接矩形四角坐标, 'boundingRect': 轮廓外接最小正矩形}, ...]
+        list of dict: 轮廓信息列表,比如:[{'cnt':轮廓数据, 'area': 轮廓面积, 'min_area_rect': 轮廓最小外接矩形, 'minARarea': 轮廓最小外接矩形面积, 'min_area_rect': 最小外接矩形四角坐标, 'boundingRect': 轮廓外接最小正矩形}, ...]
     """
     cnt_info = [{} for _ in range(len(contours))]
     for idx, cnt in enumerate(contours):
         cnt_info[idx]["cnt"] = cnt
 
         # ((cx, cy), (width, height), theta) = cv2.minAreaRect(cnt)
-        minAR = cv2.minAreaRect(cnt)
-        cnt_info[idx]["minAR"] = minAR
+        min_area_rect = cv2.minAreaRect(cnt)
+        cnt_info[idx]["min_area_rect"] = min_area_rect
 
-        rectCnt = np.int64(cv2.boxPoints(minAR))
-        cnt_info[idx]["rectCnt"] = rectCnt
+        min_area_rect_npint64 = np.int64(cv2.boxPoints(min_area_rect))
+        cnt_info[idx]["min_area_rect_npint64"] = min_area_rect_npint64
 
         # (x, y, w, h) = cv2.boundingRect(cnt)
         boundingRect = np.int64(cv2.boundingRect(cnt))
@@ -476,7 +476,7 @@ def get_contour_info_list(contours):
         area = cv2.contourArea(cnt)
         cnt_info[idx]["area"] = area
 
-        minARArea = cv2.contourArea(rectCnt)
+        minARArea = cv2.contourArea(min_area_rect_npint64)
         cnt_info[idx]["minARarea"] = minARArea
     return cnt_info
 
@@ -734,10 +734,10 @@ def crop_img_from_mask(ori_img, mask_img, bin_thresh=240):
         )
 
     chromo_contour_in_ori = mask_contours[0]
-    minAR = cv2.minAreaRect(chromo_contour_in_ori)
-    # minBox = np.int64(cv2.boxPoints(minAR))
+    min_area_rect = cv2.minAreaRect(chromo_contour_in_ori)
+    # minBox = np.int64(cv2.boxPoints(min_area_rect))
 
-    cnt_center, cnt_size, cnt_angle = minAR[0], minAR[1], minAR[2]
+    cnt_center, cnt_size, cnt_angle = min_area_rect[0], min_area_rect[1], min_area_rect[2]
     cnt_center, cnt_size = tuple(map(int, cnt_center)), tuple(map(int, cnt_size))
     (cnt_w, cnt_h) = cnt_size
     if cnt_w > cnt_h:
@@ -890,7 +890,7 @@ def chromo_stand_up_thru_mask(img, dbg=False):
     :param img:传入的直立,白底,背景透明的单根染色体图像
     :return: 摆正后的染色体图片, 图片是否翻转过
     """
-    (h, w, ch) = img.shape
+    (h, _, ch) = img.shape
 
     bgr = cv2.cvtColor(img, cv2.COLOR_RGBA2BGR) if ch == 4 else img.copy()
 
@@ -1698,7 +1698,7 @@ class Metaphaser:
         # 二值化
         # 获取自适应的二值化阈值
         if self.bin_thresh_calib_param == 0:
-            self.bin_thresh, bin_img = new_fn = fn.split(".")[0] + "_rmbk.png"(gray_img, 0, 255, cv2.THRESH_BINARY_INV+cv2.THRESH_TRIANGLE)
+            self.bin_thresh, bin_img = cv2.threshold(gray_img, 0, 255, cv2.THRESH_BINARY_INV+cv2.THRESH_TRIANGLE)
         else:
             bin_thresh, _ = cv2.threshold(
                 gray_img, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_TRIANGLE
