@@ -21,6 +21,25 @@ import cv2
 import numpy as np
 
 
+def cv_imread(file_path):
+    """读取带中文路径的图片文件
+    Args:
+        file_path (_type_): _description_
+    Returns:
+        _type_: _description_
+    """
+    return cv2.imdecode(np.fromfile(file_path, dtype=np.uint8), -1)
+
+
+def cv_imwrite(file_path, img):
+    """保存带中文路径的图片文件
+    Args:
+        file_path (_type_): _description_
+        img (_type_): _description_
+    """
+    cv2.imencode(".png", img)[1].tofile(file_path)
+
+
 def merge_two_contours(contour1, contour2):
     """
     Merge two contours into one, from the nearest points.

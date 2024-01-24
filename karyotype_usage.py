@@ -61,5 +61,5 @@ for cntrs in karyotype_chart.chromo_cntr_dicts_orgby_cy.values():
 
 kyt_img_dir, kyt_img_fn = os.path.split(KYT_IMG_FP)
 kyt_img_fbasename = os.path.splitext(kyt_img_fn)[0]
-net_img_fp = f"{os.path.join(kyt_img_dir, kyt_img_fbasename)}_id-on-cntr.png"
+net_img_fp = f"{os.path.join(kyt_img_dir, kyt_img_fbasename)}_id-on-cntr02.png"
 cv2.imwrite(net_img_fp, canvas)

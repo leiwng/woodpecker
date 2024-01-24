@@ -2,6 +2,7 @@
 import os
 import sys
 from shutil import copyfile
+from typing import List
 
 
 def replace_separators(path):
@@ -64,7 +65,8 @@ if __name__ == "__main__":
         # 不存在则创建
         os.makedirs(dst_dir_fp)
 
-    src_fp_list = []
+    # src_fp_list: List[Union[int, List, MyObject, str]] = []
+    src_fp_list: List[str] = []
     get_all_file_fullpath(src_dir_fp, src_fp_list)
 
     common_src_fp_prefix = os.path.commonprefix(src_fp_list)

@@ -34,7 +34,7 @@ import configparser
 import cv2
 import numpy as np
 from utils.chromo_cv_utils import find_external_contours
-from utils.utils import get_distance_between_two_contours, merge_two_contours_by_npi
+from utils.utils import get_distance_between_two_contours, merge_two_contours_by_npi, cv_imread
 
 
 # 创建配置对象并读取配置文件
@@ -65,8 +65,14 @@ ROW_2_ID_NUM = cfg.getint('General', 'Row2IdNum')
 ROW_3_ID_NUM = cfg.getint('General', 'Row3IdNum')
 # Row4IdNum = 6 ;第4排染色体编号数 19,20,21,22,X,Y
 ROW_4_ID_NUM = cfg.getint('General', 'Row4IdNum')
-# SmallPieceAreaRatio = 0.4 ;染色体碎片面积同染色体面积的最大比率
-SMALL_PIECE_AREA_RATIO = cfg.getfloat('General', 'SmallPieceAreaRatio')
+#染色体碎片面积同染色体面积比率上下限：
+#碎片和主体之比:超过后值，碎片太大，很大概率是染色体的主体，有可能，同源染色体多出1根，不做进一步处理;
+#碎片和主体之比:小于前值，碎片太小，为了保证分割的准确性，不同染色体主体进行合并，直接删除；
+#碎片和主体之比:介于前值和后值之间，则需要同染色体主体进行合并，合并完成后，删除碎片
+AREA_RATIO_LIMIT = cfg.get('General', 'ChromoSplinterAreaRatioLimit')
+CHROMO_SPLINTER_AREA_RATIO_LIMIT = [int(limit.strip()) for limit in AREA_RATIO_LIMIT.split(',')]
+CHROMO_SPLINTER_AREA_RATIO_LOWER = CHROMO_SPLINTER_AREA_RATIO_LIMIT[0]
+CHROMO_SPLINTER_AREA_RATIO_UPPER = CHROMO_SPLINTER_AREA_RATIO_LIMIT[1]
 
 
 class Karyotype:
@@ -109,7 +115,7 @@ class Karyotype:
         (self.case_id, self.pic_id,
             self.img['type'], self.img['fext']) = self.img['fname'].split('.')
 
-        self.img['img'] = cv2.imread(self.img['fp'])
+        self.img['img'] = cv_imread(self.img['fp'])
         if self.img['img'] is None:
             raise ValueError(f'{karyotype_img_fp} is not a valid image')
 
@@ -325,16 +331,26 @@ class Karyotype:
                 max_area = max(cntr['area'] for cntr in same_chromo_id_cnts_dict)
                 min_area = min(cntr['area'] for cntr in same_chromo_id_cnts_dict)
 
-                if min_area / max_area > SMALL_PIECE_AREA_RATIO:
-                    # Small piece is not small enough, which can be regarded as
-                    # small piece from main branch. So no need to merge
+                area_ratio = min_area / max_area
+
+                if area_ratio > CHROMO_SPLINTER_AREA_RATIO_UPPER:
+                    # 区域太大，不能被当作染色体碎片，有可能是同源染色体多出1根，不做进一步处理
                     continue
 
-                small_piece_cntrs_dict = [ cntr for cntr in same_chromo_id_cnts_dict if cntr['area'] / max_area < SMALL_PIECE_AREA_RATIO ]
-                main_branch_cntrs_dict = [ cntr for cntr in same_chromo_id_cnts_dict if cntr['area'] / max_area >= SMALL_PIECE_AREA_RATIO ]
+                small_piece_cntrs_dict = [ cntr for cntr in same_chromo_id_cnts_dict if cntr['area'] / max_area < CHROMO_SPLINTER_AREA_RATIO_UPPER ]
+                main_branch_cntrs_dict = [ cntr for cntr in same_chromo_id_cnts_dict if cntr['area'] / max_area >= CHROMO_SPLINTER_AREA_RATIO_UPPER ]
 
                 # for every small piece contour, find the nearest main branch contour
                 for small_piece_cntr_dict in small_piece_cntrs_dict:
+
+                    cntr_area = small_piece_cntr_dict['area']
+                    area_ratio = cntr_area / max_area
+
+                    if area_ratio < CHROMO_SPLINTER_AREA_RATIO_LOWER:
+                        # 区域太小，为了保证分割的准确性，不同染色体主体进行合并，直接删除
+                        small_cnts_need_delete.append(small_piece_cntr_dict['cntr_idx'])
+                        continue
+
                     # 记录当轮廓间距离最小时,当时的距离
                     min_distance = float('inf')
                     # 同小碎片距离最近的主干轮廓
