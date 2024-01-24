@@ -17,6 +17,8 @@
         "ddepth",
         "fbasename",
         "fext",
+        "imdecode",
+        "imencode",
         "keypoints",
         "kmeans",
         "ksize",
@@ -25,11 +27,13 @@
         "MINMAX",
         "npint",
         "orgby",
+        "otsu",
         "removebackground",
         "rmbk",
-        "Thresholding"
+        "Thresholding",
+        "tofile"
     ],
-    "pylint.args": ["--generated-members=cv2.*"],
+    "pylint.args": ["--generated-members=cv2.*", "--disable=W0621"],
     "flake8.args": [
         // "--ignore=E24,E128,E201,E202,E225,E231,E252,E265,E302,E303,E401,E402,E501,E731,W504,W605",
         "--ignore=E501",
