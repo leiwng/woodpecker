@@ -38,19 +38,19 @@ from evaluate_ai_result_logger import log
 from evaluate_ai_result_time_logger import TimeLogger
 
 
-# 人工核型报告图图片目录
-KYT_IMG_DIR = r"E:\染色体测试数据\240204-评估240202测试集AI推理结果\KYT_IMG"
-# AI推理结果的根目录
-AI_RESULT_ROOT_DIR = r"E:\染色体测试数据\240204-评估240202测试集AI推理结果\AI_RESULT"
-# 核型报告图解析的结果图片保存目录，用于调试
-DBG_PIC_DIR = r"E:\染色体测试数据\240204-评估240202测试集AI推理结果\DBG_PIC"
-# 保存评估结果保存的目录
-EVA_RESULT_DIR = r"E:\染色体测试数据\240204-评估240202测试集AI推理结果\EVA_RESULT"
+# # 人工核型报告图图片目录
+# KYT_IMG_DIR = r"E:\染色体测试数据\240204-评估240202测试集AI推理结果\KYT_IMG"
+# # AI推理结果的根目录
+# AI_RESULT_ROOT_DIR = r"E:\染色体测试数据\240204-评估240202测试集AI推理结果\AI_RESULT"
+# # 核型报告图解析的结果图片保存目录，用于调试
+# DBG_PIC_DIR = r"E:\染色体测试数据\240204-评估240202测试集AI推理结果\DBG_PIC"
+# # 保存评估结果保存的目录
+# EVA_RESULT_DIR = r"E:\染色体测试数据\240204-评估240202测试集AI推理结果\EVA_RESULT"
 
-# KYT_IMG_DIR = r"E:\染色体测试数据\240202-测试AI结果评估程序\240206-bug_fix_4_sift_met_exp\KYT_IMG"
-# AI_RESULT_ROOT_DIR = r"E:\染色体测试数据\240202-测试AI结果评估程序\240206-bug_fix_4_sift_met_exp\AI_RESULT"
-# DBG_PIC_DIR = r"E:\染色体测试数据\240202-测试AI结果评估程序\240206-bug_fix_4_sift_met_exp\DBG_PIC"
-# EVA_RESULT_DIR = r"E:\染色体测试数据\240202-测试AI结果评估程序\240206-bug_fix_4_sift_met_exp\EVA_RESULT"
+KYT_IMG_DIR = r"E:\染色体测试数据\240202-测试AI结果评估程序\240206-bug_fix_4_sift_met_exp\KYT_IMG"
+AI_RESULT_ROOT_DIR = r"E:\染色体测试数据\240202-测试AI结果评估程序\240206-bug_fix_4_sift_met_exp\AI_RESULT"
+DBG_PIC_DIR = r"E:\染色体测试数据\240202-测试AI结果评估程序\240206-bug_fix_4_sift_met_exp\DBG_PIC"
+EVA_RESULT_DIR = r"E:\染色体测试数据\240202-测试AI结果评估程序\240206-bug_fix_4_sift_met_exp\EVA_RESULT"
 
 # 记录评估结果的文件的数据结构, 按照案例号和图号为key的dict数组
 eva_result = []
@@ -170,7 +170,7 @@ for case_pic_dir in case_pic_dirs:
             kyt_chromo_result.append(chromo_cntr_dict)
 
     # 按染色体编号和cx排序
-    kyt_chromo_result = sorted(kyt_chromo_result, key=lambda x: (x['chromo_id'], x['chromo_idx']))
+    kyt_chromo_result = sorted(kyt_chromo_result, key=lambda x: (x['chromo_idx'], x['cx']))
 
     # 打印核型报告图中的染色体信息图片用于调试
     # canvas = kyt_chart.img["img"].copy()
