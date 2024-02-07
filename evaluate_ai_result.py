@@ -52,6 +52,18 @@ AI_RESULT_ROOT_DIR = r"E:\染色体测试数据\240202-测试AI结果评估程�
 DBG_PIC_DIR = r"E:\染色体测试数据\240202-测试AI结果评估程序\240206-bug_fix_4_sift_met_exp\DBG_PIC"
 EVA_RESULT_DIR = r"E:\染色体测试数据\240202-测试AI结果评估程序\240206-bug_fix_4_sift_met_exp\EVA_RESULT"
 
+if not os.path.exists(KYT_IMG_DIR):
+    log.info(f"核型报告图目录: {KYT_IMG_DIR} 不存在")
+
+if not os.path.exists(AI_RESULT_ROOT_DIR):
+    log.info(f"AI结果目录: {AI_RESULT_ROOT_DIR} 不存在")
+
+if not os.path.exists(DBG_PIC_DIR):
+    os.makedirs(DBG_PIC_DIR)
+
+if not os.path.exists(EVA_RESULT_DIR):
+    os.makedirs(EVA_RESULT_DIR)
+
 # 记录评估结果的文件的数据结构, 按照案例号和图号为key的dict数组
 eva_result = []
 """
