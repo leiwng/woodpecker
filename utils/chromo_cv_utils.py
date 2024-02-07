@@ -1,9 +1,4 @@
-"""染色体图像计算机视觉处理库
-本模块包含染色体图像计算机视觉处理相关的基础工具函数.
-    1. 翻转变换 flip
-    author: Lei Wang
-    date:2022-05-23
-"""
+# -*- coding: utf-8 -*-
 import itertools
 from math import cos, fabs, radians, sin, sqrt, pi, ceil
 from skimage import morphology
@@ -12,10 +7,244 @@ import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 
+"""染色体图像计算机视觉处理库
+本模块包含染色体图像计算机视觉处理相关的基础工具函数.
+    1. 翻转变换 flip
+
+Usage:
+    - Import this module using `import mymodule`.
+    - Use the functions provided by this module as needed.
+
+Author: Lei Wang
+Date: May 23, 2022
+"""
+
+__author__ = "王磊"
+__copyright__ = "Copyright 2023 四川科莫生医疗科技有限公司"
+__credits__ = ["王磊"]
+__maintainer__ = "王磊"
+__email__ = "lei.wang@kemoshen.com"
+__version__ = "0.0.1"
+__status__ = "Development"
+
 
 MAX_DISTANCE = 99999
 SMALL_CONTOUR_AREA_OF_CHROMO = 10
 WRAPPER_SIZE_4_CHROMO_TOUCH_BORDER = 400
+
+
+def sift_similarity_on_roi(roi1, roi2):
+    """通过SIFT特征匹配算法计算两个ROI的相似度, ROI是Region of Interest的缩写
+
+    Args:
+        roi1 (_type_): Region of interest 1.
+        roi2 (_type_): Region of interest 2.
+
+    Returns:
+        float: similarity score in %
+    """
+    # Initialize SIFT detector
+    sift = cv2.SIFT_create()
+
+    # Detect keypoints and compute descriptors for ROIs
+    keypoints1, descriptors1 = sift.detectAndCompute(roi1, None)
+    keypoints2, descriptors2 = sift.detectAndCompute(roi2, None)
+
+    # Match descriptors between ROIs
+    bf = cv2.BFMatcher()
+    matches = bf.knnMatch(descriptors1, descriptors2, k=2)
+
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+
+    # 返回相似度
+    return len(good_matches) / max(len(keypoints1), len(keypoints2)) * 100
+
+
+def generate_distinct_colors(n):
+    """获取容易区分的RGB颜色
+    是在色彩空间中均匀地选择颜色，例如在HSV（色相、饱和度、亮度）空间中操作，
+    然后将它们转换回RGB格式，因为HSV空间更容易生成具有不同色相的颜色。
+
+    Args:
+        n (int): 需要的颜色数
+
+    Returns:
+        (B,G,R): BGR颜色值
+    """
+    hues = np.linspace(0, 180, n, endpoint=False)  # HSV中的色相范围是[0, 180)
+    colors = []
+    for hue in hues:
+        # 使用饱和度和亮度为100%来获得鲜艳的颜色
+        color = cv2.cvtColor(np.uint8([[[hue, 255, 255]]]), cv2.COLOR_HSV2BGR)[0][0]
+        colors.append(color.tolist())
+    return colors
+
+
+def cv_imread(file_path):
+    """读取带中文路径的图片文件
+    Args:
+        file_path (_type_): _description_
+    Returns:
+        _type_: _description_
+    """
+    return cv2.imdecode(
+        np.fromfile(file_path, dtype=np.uint8), cv2.IMREAD_UNCHANGED
+    )  # 前值 cv2.IMREAD_COLOR
+
+
+def cv_imwrite(file_path, img):
+    """保存带中文路径的图片文件
+    Args:
+        file_path (_type_): _description_
+        img (_type_): _description_
+    """
+    cv2.imencode(".png", img)[1].tofile(file_path)
+
+
+def merge_two_contours(contour1, contour2):
+    """
+    Merge two contours into one, from the nearest points.
+
+    Args:
+        contour1: First contour.
+        contour2: Second contour.
+
+    Returns:
+        Merged contour.
+    """
+    (
+        _,
+        contour1_nearest_point_idx,
+        contour2_nearest_point_idx,
+    ) = get_distance_between_two_contours(contour1, contour2)
+
+    # reorganize contour1's contour points from the nearest point
+    reorganized_contour1 = np.roll(contour1, -contour1_nearest_point_idx, axis=0)
+    return np.insert(contour2, contour2_nearest_point_idx, reorganized_contour1, axis=0)
+
+
+def merge_two_contours_by_npi(
+    contour1, contour2, contour1_nearest_point_idx, contour2_nearest_point_idx
+):
+    """
+    Merge two contours into one, by the nearest points index.
+    "npi" means "nearest point index" of a contour.
+
+    Args:
+        contour1: First contour.
+        contour2: Second contour.
+        contour1_nearest_point_idx: Nearest point index of contour1.
+        contour2_nearest_point_idx: Nearest point index of contour2.
+
+    Returns:
+        Merged contour.
+    """
+    # reorganize contour1's contour points from the nearest point
+    reorganized_contour1 = np.roll(contour1, -contour1_nearest_point_idx, axis=0)
+    return np.insert(contour2, contour2_nearest_point_idx, reorganized_contour1, axis=0)
+
+
+def contour_closest_to_which_contour(given_contour, contours):
+    """
+    Find the contour in contours that is closest to the given contour.
+
+    Args:
+        contour: Given contour.
+        contours: Contours to search from.
+
+    Returns:
+        Index of the closest contour in contours.
+        Distance to the closest contour.
+        Nearest point index of the given contour.
+        Nearest point index of the closest contour.
+    """
+    min_distance = float("inf")
+    closest_contour_idx = 0
+    nearest_point_idx_on_given_contour = 0
+    nearest_point_idx_on_closest_contour = 0
+    for idx, cnt in enumerate(contours):
+        distance, src_idx, dst_idx = get_distance_between_two_contours(
+            given_contour, cnt
+        )
+        if distance < min_distance:
+            min_distance = distance
+            closest_contour_idx = idx
+            nearest_point_idx_on_given_contour = src_idx
+            nearest_point_idx_on_closest_contour = dst_idx
+
+    return (
+        closest_contour_idx,
+        min_distance,
+        nearest_point_idx_on_given_contour,
+        nearest_point_idx_on_closest_contour,
+    )
+
+
+def get_distance_between_two_contours(contour1, contour2):
+    """
+    Get the distance between two contours.
+
+    Args:
+        contour1: First contour.
+        contour2: Second contour.
+
+    Returns:
+        Distance between two contours.
+        nearest point index of contour1.
+        nearest point index of contour2.
+    """
+    contour1_points = contour1[:, 0, :]
+    contour2_points = contour2[:, 0, :]
+
+    min_distance = float("inf")
+    contour1_nearest_point_idx = 0
+    contour2_nearest_point_idx = 0
+
+    for idx1, point1 in enumerate(contour1_points):
+        for idx2, point2 in enumerate(contour2_points):
+            distance = np.linalg.norm(point1 - point2)
+            if distance < min_distance:
+                min_distance = distance
+                contour1_nearest_point_idx = idx1
+                contour2_nearest_point_idx = idx2
+
+    return min_distance, contour1_nearest_point_idx, contour2_nearest_point_idx
+
+
+def contour_bbox_img(img, contour):
+    """
+    Get the bounding box img of a contour.
+
+    Args:
+        img: Image.
+        contour: Contour.
+
+    Returns:
+        cropped: Bounding box image, with grayscale and black background.
+        target_on_white: Bounding box image, with white background, not grayscale.
+    """
+    # if not grayscale, convert to grayscale
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) if len(img.shape) == 3 else img
+
+    # Create a mask for the contour
+    mask = np.zeros_like(gray)
+    cv2.drawContours(mask, [contour], -1, 255, thickness=cv2.FILLED)
+
+    # Extract the target
+    extracted = cv2.bitwise_and(gray, gray, mask=mask)
+
+    # get bounding box of the contour
+    x, y, w, h = cv2.boundingRect(contour)
+
+    # Crop the object with some padding, adjust padding as needed
+    padding = 1
+    cropped = extracted[y - padding : y + h + padding, x - padding : x + w + padding]
+
+    # make it white background
+    wbg_cropped = np.full_like(cropped, 255, dtype=np.uint8)
+    np.copyto(wbg_cropped, cropped, where=(cropped > 0))
+
+    return cropped, wbg_cropped
 
 
 def erode_with_kernel(img, kernel=None, iterations=1):
@@ -195,7 +424,13 @@ def normalization_with_contours_mask(img, contours, norm_alpha, norm_beta):
     values = gray_img[loc]
 
     norm_values = cv2.equalizeHist(values)
-    norm_values = cv2.normalize(norm_values, dst=None, alpha=norm_alpha, beta=norm_beta, norm_type=cv2.NORM_MINMAX)
+    norm_values = cv2.normalize(
+        norm_values,
+        dst=None,
+        alpha=norm_alpha,
+        beta=norm_beta,
+        norm_type=cv2.NORM_MINMAX,
+    )
 
     norm_img = gray_img.copy()
     for i, coord in enumerate(zip(loc[0], loc[1])):
@@ -365,7 +600,7 @@ def find_external_contours(img, bin_thresh=None):
         list of contours data: 找到的轮廓数据列表
     """
     # 灰化
-    dst_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    dst_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) if len(img.shape) == 3 else img
     if bin_thresh:
         # 二值化
         _, dst_img = cv2.threshold(dst_img, bin_thresh, 255, cv2.THRESH_BINARY_INV)
@@ -379,7 +614,7 @@ def find_external_contours_en(
     img,
     bin_thresh=-1,
     bin_type=cv2.THRESH_BINARY_INV + cv2.THRESH_TRIANGLE,
-    bin_thresh_adjustment=-15,
+    bin_thresh_adjustment=-5,
 ):
     """寻找图像中物体的外部轮廓功能增强版
 
@@ -393,7 +628,8 @@ def find_external_contours_en(
         _type_: _description_
     """
     # 灰化
-    gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    if len(img.shape) == 3:
+        gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     if bin_thresh is not None and bin_thresh >= 0:
         # 直接使用指定阈值bin_thresh进行二值化
@@ -435,7 +671,8 @@ def find_external_contours_with_opening(img, bin_thresh=None):
         list of contours data: 找到的轮廓数据列表
     """
     # 灰化
-    dst_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    if len(img.shape) == 3:
+        dst_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     if bin_thresh:
         # 二值化
         _, dst_img = cv2.threshold(dst_img, bin_thresh, 255, cv2.THRESH_BINARY_INV)
@@ -737,7 +974,11 @@ def crop_img_from_mask(ori_img, mask_img, bin_thresh=240):
     min_area_rect = cv2.minAreaRect(chromo_contour_in_ori)
     # minBox = np.int64(cv2.boxPoints(min_area_rect))
 
-    cnt_center, cnt_size, cnt_angle = min_area_rect[0], min_area_rect[1], min_area_rect[2]
+    cnt_center, cnt_size, cnt_angle = (
+        min_area_rect[0],
+        min_area_rect[1],
+        min_area_rect[2],
+    )
     cnt_center, cnt_size = tuple(map(int, cnt_center)), tuple(map(int, cnt_size))
     (cnt_w, cnt_h) = cnt_size
     if cnt_w > cnt_h:
@@ -1023,7 +1264,6 @@ def chromo_stand_up_thru_skeleton(img, dbg=False):
 
 
 def chromo_stand_up(img, dbg=False):
-
     return chromo_stand_up_thru_skeleton(img=img, dbg=dbg)
 
 
@@ -1279,7 +1519,12 @@ def metafer_img_clean(
     return dst_img
 
 
-def _isCellLikeCircle(cnt, small_contour_area, circle_ratio_for_small_contour, circle_ratio_for_big_contour):
+def _isCellLikeCircle(
+    cnt,
+    small_contour_area,
+    circle_ratio_for_small_contour,
+    circle_ratio_for_big_contour,
+):
     """判断轮廓是否是细胞
 
     Args:
@@ -1296,7 +1541,9 @@ def _isCellLikeCircle(cnt, small_contour_area, circle_ratio_for_small_contour, c
     minECArea = pi * (radius**2)
     circle_ratio = area / minECArea
 
-    return (area < small_contour_area and circle_ratio > circle_ratio_for_small_contour) or (area >= small_contour_area and circle_ratio > circle_ratio_for_big_contour)
+    return (
+        area < small_contour_area and circle_ratio > circle_ratio_for_small_contour
+    ) or (area >= small_contour_area and circle_ratio > circle_ratio_for_big_contour)
 
 
 # 判断轮廓是否触及图片边界
@@ -1571,14 +1818,14 @@ class Metaphaser:
         meta_img_w=1280,
         border_color1=(254, 254, 254),
         border_color2=(0, 0, 0),
-        label_zone_h=0, # 17
-        label_zone_w=0, # 38
+        label_zone_h=0,  # 17
+        label_zone_w=0,  # 38
         chromo_size_gain=1,
         sharpen_or_not=False,
         ikaros_like_or_not=False,
         img_size_norm_or_not=True,
         just_fit_all_chromo_or_not=False,
-        bin_thresh_calib_param=5, # 尽量保留染色体的随体
+        bin_thresh_calib_param=5,  # 尽量保留染色体的随体
         contour_smoothy=False,
         contour_smoothy_param=0.002,
         normalization=True,
@@ -1698,7 +1945,9 @@ class Metaphaser:
         # 二值化
         # 获取自适应的二值化阈值
         if self.bin_thresh_calib_param == 0:
-            self.bin_thresh, bin_img = cv2.threshold(gray_img, 0, 255, cv2.THRESH_BINARY_INV+cv2.THRESH_TRIANGLE)
+            self.bin_thresh, bin_img = cv2.threshold(
+                gray_img, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_TRIANGLE
+            )
         else:
             bin_thresh, _ = cv2.threshold(
                 gray_img, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_TRIANGLE
@@ -1709,7 +1958,9 @@ class Metaphaser:
             else:
                 self.bin_thresh = bin_thresh
 
-            _, bin_img = cv2.threshold(gray_img, self.bin_thresh, 255, cv2.THRESH_BINARY_INV)
+            _, bin_img = cv2.threshold(
+                gray_img, self.bin_thresh, 255, cv2.THRESH_BINARY_INV
+            )
 
         # 开运算,去背景噪点
         bin_open_img = opening(
@@ -1733,14 +1984,23 @@ class Metaphaser:
 
         # 去细胞
         contours = [
-            cnt for cnt in contours if not _isCellLikeCircle(cnt, self.small_contour_area, self.circle_ratio_for_small_contour, self.circle_ratio_for_big_contour)
+            cnt
+            for cnt in contours
+            if not _isCellLikeCircle(
+                cnt,
+                self.small_contour_area,
+                self.circle_ratio_for_small_contour,
+                self.circle_ratio_for_big_contour,
+            )
         ]
 
         # 去接触边界的大轮廓
         contours = [
             cnt
             for cnt in contours
-            if not _isNoneChromoObjTouchBorder(bin_open_close_img.shape, cnt, self.border_width)
+            if not _isNoneChromoObjTouchBorder(
+                bin_open_close_img.shape, cnt, self.border_width
+            )
         ]
         # contours = [
         #     cnt
@@ -1750,7 +2010,12 @@ class Metaphaser:
 
         # 轮廓平滑
         if self.contour_smoothy:
-            contours = [cv2.approxPolyDP(cnt, self.contour_smoothy_param * cv2.arcLength(cnt, True), True) for cnt in contours]
+            contours = [
+                cv2.approxPolyDP(
+                    cnt, self.contour_smoothy_param * cv2.arcLength(cnt, True), True
+                )
+                for cnt in contours
+            ]
 
         # 生成有效轮廓掩码图
         mask = np.zeros(ori_clean_img.shape, np.uint8)
@@ -1763,7 +2028,9 @@ class Metaphaser:
         # 规定化
         # 自适应直方图均衡+归一化
         if self.normalization:
-            dst_img = normalization_with_contours_mask(dst_img, contours, self.norm_alpha, self.norm_beta)
+            dst_img = normalization_with_contours_mask(
+                dst_img, contours, self.norm_alpha, self.norm_beta
+            )
 
         # 规定化
         # 染色体放大

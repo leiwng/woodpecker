@@ -29,12 +29,15 @@ __status__ = "Development"
 
 import os
 import configparser
-
-
 import cv2
 import numpy as np
-from utils.chromo_cv_utils import find_external_contours
-from utils.utils import get_distance_between_two_contours, merge_two_contours_by_npi, cv_imread
+from copy import deepcopy
+from utils.chromo_cv_utils import (
+    find_external_contours,
+    get_distance_between_two_contours,
+    merge_two_contours_by_npi,
+    cv_imread
+)
 
 
 # 创建配置对象并读取配置文件
@@ -43,6 +46,12 @@ cfg.read('./config/karyotype.ini', encoding='utf-8')
 
 # BinThreshold = 253 ;求轮廓时图像二值化使用的阈值
 BIN_THRESH = cfg.getint('General', 'BinThreshold')
+#用经验值去校正通过cv2.THRESH_TRIANGLE方式求得的二值化阈值
+BIN_THRESH_DELTA = cfg.getint('General', 'BinThresholdDelta')
+
+# 允许最小轮廓的面积: 20 MinContourArea = 20
+MIN_CNTR_AREA = cfg.getint('General', 'MinContourArea')
+
 # IdCharYTolerance = 4;同排染色体编号高度容差,单位像素
 ID_CHAR_Y_TOLERANCE = cfg.getint('General', 'IdCharYTolerance')
 # MaxIdCharArea = 80 ;染色体编号字符轮廓最大面积，实际测量为76，为了容差，设置为80
@@ -70,7 +79,7 @@ ROW_4_ID_NUM = cfg.getint('General', 'Row4IdNum')
 #碎片和主体之比:小于前值，碎片太小，为了保证分割的准确性，不同染色体主体进行合并，直接删除；
 #碎片和主体之比:介于前值和后值之间，则需要同染色体主体进行合并，合并完成后，删除碎片
 AREA_RATIO_LIMIT = cfg.get('General', 'ChromoSplinterAreaRatioLimit')
-CHROMO_SPLINTER_AREA_RATIO_LIMIT = [int(limit.strip()) for limit in AREA_RATIO_LIMIT.split(',')]
+CHROMO_SPLINTER_AREA_RATIO_LIMIT = [float(limit.strip()) for limit in AREA_RATIO_LIMIT.split(',')]
 CHROMO_SPLINTER_AREA_RATIO_LOWER = CHROMO_SPLINTER_AREA_RATIO_LIMIT[0]
 CHROMO_SPLINTER_AREA_RATIO_UPPER = CHROMO_SPLINTER_AREA_RATIO_LIMIT[1]
 
@@ -115,11 +124,20 @@ class Karyotype:
         (self.case_id, self.pic_id,
             self.img['type'], self.img['fext']) = self.img['fname'].split('.')
 
-        self.img['img'] = cv_imread(self.img['fp'])
-        if self.img['img'] is None:
+        self.img['img_src'] = cv_imread(self.img['fp'])
+        if self.img['img_src'] is None:
             raise ValueError(f'{karyotype_img_fp} is not a valid image')
 
-        self.img['height'], self.img['width'], self.img['channels'] = self.img['img'].shape
+        img_shape = self.img['img_src'].shape
+        if len(img_shape) == 3:
+            self.img['height'], self.img['width'], self.img['channels'] = img_shape
+            self.img['img'] = cv2.cvtColor(self.img['img_src'], cv2.COLOR_BGR2GRAY)
+            self.img['channels'] = 0
+        else:
+            self.img['height'], self.img['width'] = img_shape
+            self.img['channels'] = 0
+            self.img['img'] = self.img['img_src'].copy()
+        # 后续对图片的操作一律使用self.img['img']，不再使用self.img['img_src']
 
         # member properties init
         self.cntr_dicts = []  # 核型图中所有轮廓信息
@@ -189,22 +207,38 @@ class Karyotype:
 
         # 判断key个数是否为4，不为4则报错
         if len(merged_id_cntr_dicts_orgby_cy) != 4:
-            raise ValueError(f'{self.img["fp"]}染色体编号排的数量为{
+            raise ValueError(f'{self.img["fname"]} 染色体编号排的数量为{
                              len(merged_id_cntr_dicts_orgby_cy)},应该为4')
 
         # 按照cy坐标从小到大排序
         merged_id_cntr_dicts_orgby_cy = dict(
             sorted(merged_id_cntr_dicts_orgby_cy.items(), key=lambda item: item[0]))
 
+        # 每列的轮廓按x坐标从小到大排序
+        for key in merged_id_cntr_dicts_orgby_cy:
+            merged_id_cntr_dicts_orgby_cy[key] = sorted(
+                merged_id_cntr_dicts_orgby_cy[key], key=lambda item: item['cx'])
+
         # SAVE RESULT to CLASS INSTANCE MEMBER PROPERTY
         self.id_char_cntr_dicts_orgby_cy = merged_id_cntr_dicts_orgby_cy
         self.id_char_cntr_dicts = [
             merged_id_cntr_dicts_orgby_cy[key] for key in merged_id_cntr_dicts_orgby_cy]
 
-        # 每列的轮廓按x坐标从小到大排序
-        for key in merged_id_cntr_dicts_orgby_cy:
-            merged_id_cntr_dicts_orgby_cy[key] = sorted(
-                merged_id_cntr_dicts_orgby_cy[key], key=lambda item: item['cx'])
+        # 删除无关信息再打印染色体编号信息
+        # print_info = deepcopy(merged_id_cntr_dicts_orgby_cy)
+        # for cntr_dicts_key, cntr_dicts in print_info.items():
+        #     print(f'cy:{cntr_dicts_key} - {len(cntr_dicts)}个染色体编号字符轮廓')
+        #     for cntr in cntr_dicts:
+        #         del cntr['cntr']
+        #         del cntr['area']
+        #         del cntr['rect']
+        #         del cntr['min_area_rect']
+        #         del cntr['cx']
+        #         del cntr['cy']
+        #         del cntr['bc_x']
+        #         del cntr['bc_y']
+        #         del cntr['bc_point']
+        # print(f'{self.img["fname"]} 染色体编号轮廓信息:{print_info}')
 
         # 把每排染色体编号字符x坐标距离小于等于ID_CHAR_X_TOLERANCE的只保留一个
         for key, cntr_dicts in merged_id_cntr_dicts_orgby_cy.items():
@@ -222,8 +256,9 @@ class Karyotype:
         id_num_in_rows = [ROW_1_ID_NUM, ROW_2_ID_NUM, ROW_3_ID_NUM, ROW_4_ID_NUM]
         for idx, key in enumerate(merged_id_cntr_dicts_orgby_cy):
             if len(merged_id_cntr_dicts_orgby_cy[key]) != id_num_in_rows[idx]:
-                raise ValueError(f'{self.img["fp"]}第{
-                    idx+1}排染色体编号数量为{len(merged_id_cntr_dicts_orgby_cy[key])},应该为{id_num_in_rows[idx]}')
+                print(f'{self.img["fname"]}: 第{idx+1}排染色体编号数量为{len(merged_id_cntr_dicts_orgby_cy[key])},应该为{id_num_in_rows[idx]}')
+                # raise ValueError(f'{self.img["fname"]}: 第{
+                #     idx+1}排染色体编号数量为{len(merged_id_cntr_dicts_orgby_cy[key])},应该为{id_num_in_rows[idx]}')
 
         # 汇总染色体编号信息
         chromo_id_list = ["1", "2", "3", "4", "5",
@@ -237,6 +272,19 @@ class Karyotype:
                 cntr['chromo_idx'] = chromo_idx
                 chromo_idx += 1
 
+        # 删除无关信息再打印染色体编号信息
+        # print_info = deepcopy(merged_id_cntr_dicts_orgby_cy)
+        # for cntr_dicts_key, cntr_dicts in print_info.items():
+        #     print(f'cy:{cntr_dicts_key} - {len(cntr_dicts)}个染色体编号字符轮廓')
+        #     for cntr in cntr_dicts:
+        #         del cntr['cntr']
+        #         del cntr['area']
+        #         del cntr['rect']
+        #         del cntr['min_area_rect']
+        #         del cntr['cx']
+        #         del cntr['cy']
+        # print(f'{self.img["fname"]}染色体编号轮廓信息:{print_info}')
+
         # SAVE RESULT to CLASS INSTANCE MEMBER PROPERTY
         self.id_cntr_dicts_orgby_cy = merged_id_cntr_dicts_orgby_cy
         self.id_cntr_dicts = [merged_id_cntr_dicts_orgby_cy[key]
@@ -245,9 +293,18 @@ class Karyotype:
     def read_karyotype(self):
         """从报告图中读取染色体数据
         """
-        # get all external contours
-        cntrs = find_external_contours(
-            self.img['img'], BIN_THRESH)
+
+        # guess proper bin threshold
+        adaptive_method = cv2.THRESH_BINARY_INV + cv2.THRESH_TRIANGLE
+        bin_thresh = 0
+        bin_thresh, _ = cv2.threshold(self.img['img'], bin_thresh, 255, adaptive_method)
+        # 根据经验值校正二值化阈值
+        bin_thresh = bin_thresh - BIN_THRESH_DELTA
+        # 求轮廓
+        cntrs = find_external_contours(self.img['img'], bin_thresh)
+
+        # 去掉微小轮廓
+        cntrs = [cntr for cntr in cntrs if cv2.contourArea(cntr) > MIN_CNTR_AREA]
 
         # get all contours info
         self.cntr_dicts = [{} for _ in range(len(cntrs))]
@@ -258,19 +315,23 @@ class Karyotype:
         # AND self.id_cntr_dicts_orgby_cy AND self.id_char_cntr_dicts_orgby_cy is also ready to use
         self._id_info()
 
-        # 获取染色体编号轮廓之外的轮廓
-        # 先获取染色体编号轮廓的索引，然后用这些索引过滤掉所有轮廓，得到剩下的轮廓就是染色体轮廓
+        # 获取染色体编号字符轮廓之外的轮廓
+        # 先获取染色体编号字符轮廓的索引，然后用这些索引过滤掉所有轮廓，得到剩下的轮廓就是染色体轮廓
         id_char_cntrs_cntr_idx = []
         for id_char_cntrs in self.id_char_cntr_dicts:
             id_char_cntrs_cntr_idx.extend(
                 cntr['cntr_idx'] for cntr in id_char_cntrs
             )
-        # get left contours
+
+        # print(f'{self.img["fname"]} 染色体编号轮廓索引:{id_char_cntrs_cntr_idx}')
+
+        # 获取除了染色体编号字符轮廓之外的轮廓
         left_cntr_dicts = [
             cntr for cntr in self.cntr_dicts if cntr['cntr_idx'] not in id_char_cntrs_cntr_idx]
 
-        # organize left contours info by cy
+        # 将剩余的轮廓按照cy坐标进行组织
         left_cntr_dicts_orgby_cy = {}
+        # cy_key实际是核型图中每行染色体的限高
         cy_keys = list(self.id_cntr_dicts_orgby_cy.keys())
         for cntr in left_cntr_dicts:
             top_y_limit = 0
@@ -283,7 +344,8 @@ class Karyotype:
                     left_cntr_dicts_orgby_cy[bottom_y_limit].append(cntr)
                     break
                 top_y_limit = bottom_y_limit
-        # sort left contours dict by cx
+
+        # 将每行的轮廓按照cx坐标从小到大排序
         for key in left_cntr_dicts_orgby_cy:
             left_cntr_dicts_orgby_cy[key] = sorted(
                 left_cntr_dicts_orgby_cy[key], key=lambda item: item['cx'])
@@ -292,22 +354,24 @@ class Karyotype:
         # with same row key: cy, match left contours with id contours
         # the contour in left contours belong to the nearest id contour
         for cy_key, same_cy_left_cntr_dicts in left_cntr_dicts_orgby_cy.items():
-            for left_cnt in same_cy_left_cntr_dicts:
+            for left_cntr in same_cy_left_cntr_dicts:
                 min_distance = float('inf')
                 chromo_id = None
                 chromo_idx = None
-                for id_cnt in self.id_cntr_dicts_orgby_cy[cy_key]:
-                    left_cntr_center = np.array(
-                        left_cnt['center'], dtype=np.int32)
-                    id_cntr_center = np.array(id_cnt['center'], dtype=np.int32)
-                    distance = np.linalg.norm(left_cntr_center - id_cntr_center)
+                for id_cntr in self.id_cntr_dicts_orgby_cy[cy_key]:
+                    # bc means bottom center point
+                    # 使用染色体轮廓底部中心点与染色体编号字符轮廓中心点的距离来判断染色体轮廓属于哪个染色体编号
+                    left_cntr_bc_point = np.array(
+                        left_cntr['bc_point'], dtype=np.int32)
+                    id_cntr_center = np.array(id_cntr['center'], dtype=np.int32)
+                    distance = np.linalg.norm(left_cntr_bc_point - id_cntr_center)
                     if distance < min_distance:
                         min_distance = distance
-                        chromo_id = id_cnt['chromo_id']
-                        chromo_idx = id_cnt['chromo_idx']
-                left_cnt['chromo_id'] = chromo_id
-                left_cnt['chromo_idx'] = chromo_idx
-                left_cnt['distance_to_id'] = min_distance
+                        chromo_id = id_cntr['chromo_id']
+                        chromo_idx = id_cntr['chromo_idx']
+                left_cntr['chromo_id'] = chromo_id
+                left_cntr['chromo_idx'] = chromo_idx
+                left_cntr['distance_to_id'] = min_distance
 
         # NOW, ALL left contours have matched chromo id
         # Merge small pieces contours to near big contours
@@ -316,17 +380,21 @@ class Karyotype:
         # The top loop is for each row
         for same_cy_left_cntr_dicts in left_cntr_dicts_orgby_cy.values():
             # 获取当前行所有染色体编号
-            chromo_id_list = [ cntr['chromo_id'] for cntr in same_cy_left_cntr_dicts ]
-            unq_chromo_id_list = list(set(chromo_id_list))
+            same_cy_chromo_id_list = [ cntr['chromo_id'] for cntr in same_cy_left_cntr_dicts ]
+            same_cy_unq_chromo_id_list = list(set(same_cy_chromo_id_list))
+
+            # print(f'染色体编号列表:{same_cy_unq_chromo_id_list}')
 
             # The 2nd level loop is for each left contours in same row
             # 按照染色体编号来判断相同编号的染色体中是否有小碎片需要合并
-            for chromo_id in unq_chromo_id_list:
-                same_chromo_id_cnts_dict = [ cntr for cntr in same_cy_left_cntr_dicts if cntr['chromo_id'] == chromo_id ]
+            for chromo_id in same_cy_unq_chromo_id_list:
+                same_chromo_id_cnts_dict = [ the_dict for the_dict in same_cy_left_cntr_dicts if the_dict['chromo_id'] == chromo_id ]
 
                 if len(same_chromo_id_cnts_dict) <= 1:
                     # Only ONE, no need to merge
                     continue
+
+                # print(f'同源染色体信息:{chromo_id} - {len(same_chromo_id_cnts_dict)}')
 
                 max_area = max(cntr['area'] for cntr in same_chromo_id_cnts_dict)
                 min_area = min(cntr['area'] for cntr in same_chromo_id_cnts_dict)
@@ -337,52 +405,52 @@ class Karyotype:
                     # 区域太大，不能被当作染色体碎片，有可能是同源染色体多出1根，不做进一步处理
                     continue
 
-                small_piece_cntrs_dict = [ cntr for cntr in same_chromo_id_cnts_dict if cntr['area'] / max_area < CHROMO_SPLINTER_AREA_RATIO_UPPER ]
-                main_branch_cntrs_dict = [ cntr for cntr in same_chromo_id_cnts_dict if cntr['area'] / max_area >= CHROMO_SPLINTER_AREA_RATIO_UPPER ]
+                small_cntr_dicts = [ cntr for cntr in same_chromo_id_cnts_dict if cntr['area'] / max_area < CHROMO_SPLINTER_AREA_RATIO_UPPER ]
+                main_cntr_dicts = [ cntr for cntr in same_chromo_id_cnts_dict if cntr['area'] / max_area >= CHROMO_SPLINTER_AREA_RATIO_UPPER ]
 
                 # for every small piece contour, find the nearest main branch contour
-                for small_piece_cntr_dict in small_piece_cntrs_dict:
+                for small_cntr_dict in small_cntr_dicts:
 
-                    cntr_area = small_piece_cntr_dict['area']
+                    cntr_area = small_cntr_dict['area']
                     area_ratio = cntr_area / max_area
 
                     if area_ratio < CHROMO_SPLINTER_AREA_RATIO_LOWER:
                         # 区域太小，为了保证分割的准确性，不同染色体主体进行合并，直接删除
-                        small_cnts_need_delete.append(small_piece_cntr_dict['cntr_idx'])
+                        small_cnts_need_delete.append(small_cntr_dict['cntr_idx'])
                         continue
 
                     # 记录当轮廓间距离最小时,当时的距离
                     min_distance = float('inf')
                     # 同小碎片距离最近的主干轮廓
-                    nearest_main_branch_cntr_dict = None
+                    nearest_main_cntr_dict = None
                     # 小碎片上距离主干轮廓最近点的索引
                     small_cntr_npi = None
                     # 主干轮廓上距离小碎片轮廓最近点的索引
                     main_cntr_npi = None
                     # 对主干轮廓进行循环,找到距离最近的主干轮廓
-                    for main_branch_cntr_dict in main_branch_cntrs_dict:
-                        distance, cntr_npi1, cntr_npi2 = get_distance_between_two_contours(small_piece_cntr_dict['cntr'], main_branch_cntr_dict['cntr'])
+                    for main_cntr_dict in main_cntr_dicts:
+                        distance, cntr_npi1, cntr_npi2 = get_distance_between_two_contours(small_cntr_dict['cntr'], main_cntr_dict['cntr'])
                         if distance < min_distance:
                             min_distance = distance
-                            nearest_main_branch_cntr_dict = main_branch_cntr_dict
+                            nearest_main_cntr_dict = main_cntr_dict
                             small_cntr_npi = cntr_npi1
                             main_cntr_npi = cntr_npi2
                     # 找到了每个小碎片最近的主干轮廓,以及最近点的索引
                     # 合并小碎片和主干轮廓
-                    merged_cnt = merge_two_contours_by_npi(small_piece_cntr_dict['cntr'], nearest_main_branch_cntr_dict['cntr'], small_cntr_npi, main_cntr_npi)
+                    merged_cnt = merge_two_contours_by_npi(small_cntr_dict['cntr'], nearest_main_cntr_dict['cntr'], small_cntr_npi, main_cntr_npi)
 
-                    # update merged contour info to nearest_main_branch_cntr_dict
-                    nearest_main_branch_cntr_dict['cntr'] = merged_cnt
-                    nearest_main_branch_cntr_dict['area'] = cv2.contourArea(merged_cnt)
-                    nearest_main_branch_cntr_dict['rect'] = cv2.boundingRect(merged_cnt)
-                    nearest_main_branch_cntr_dict['min_area_rect'] = cv2.minAreaRect(merged_cnt)
+                    # update merged contour info to nearest_main_cntr_dict
+                    nearest_main_cntr_dict['cntr'] = merged_cnt
+                    nearest_main_cntr_dict['area'] = cv2.contourArea(merged_cnt)
+                    nearest_main_cntr_dict['rect'] = cv2.boundingRect(merged_cnt)
+                    nearest_main_cntr_dict['min_area_rect'] = cv2.minAreaRect(merged_cnt)
                     moments = cv2.moments(merged_cnt)
-                    nearest_main_branch_cntr_dict['cx'] = int(moments['m10'] / moments['m00'])
-                    nearest_main_branch_cntr_dict['cy'] = int(moments['m01'] / moments['m00'])
-                    nearest_main_branch_cntr_dict['center'] = (nearest_main_branch_cntr_dict['cx'], nearest_main_branch_cntr_dict['cy'])
+                    nearest_main_cntr_dict['cx'] = int(moments['m10'] / moments['m00'])
+                    nearest_main_cntr_dict['cy'] = int(moments['m01'] / moments['m00'])
+                    nearest_main_cntr_dict['center'] = (nearest_main_cntr_dict['cx'], nearest_main_cntr_dict['cy'])
 
                     # 记录处理完成后，需要删除小碎片轮廓
-                    small_cnts_need_delete.append(small_piece_cntr_dict['cntr_idx'])
+                    small_cnts_need_delete.append(small_cntr_dict['cntr_idx'])
 
 
         # 所有cy行的小碎片轮廓合并完成后,删除小碎片轮廓
@@ -403,6 +471,8 @@ class Karyotype:
         self.chromo_cntr_dicts_orgby_cy = left_cntr_dicts_orgby_cy
         self.chromo_cntr_dicts = [ left_cntr_dicts_orgby_cy[key] for key in left_cntr_dicts_orgby_cy ]
 
+        return deepcopy(self.chromo_cntr_dicts_orgby_cy)
+
 
     # Gather contour info for contours list
     def _gather_contours_dict(self, idx, contour):
@@ -410,6 +480,11 @@ class Karyotype:
         self.cntr_dicts[idx]['cntr'] = contour
         self.cntr_dicts[idx]['area'] = cv2.contourArea(contour)
         self.cntr_dicts[idx]['rect'] = cv2.boundingRect(contour)
+        x, y, w, h = self.cntr_dicts[idx]['rect']
+        # bc means bottom center
+        self.cntr_dicts[idx]['bc_x'] = x + w // 2
+        self.cntr_dicts[idx]['bc_y'] = y + h
+        self.cntr_dicts[idx]['bc_point'] = (self.cntr_dicts[idx]['bc_x'], self.cntr_dicts[idx]['bc_y'])
         self.cntr_dicts[idx]['min_area_rect'] = cv2.minAreaRect(contour)
         moments = cv2.moments(contour)
         if moments['m00'] != 0:

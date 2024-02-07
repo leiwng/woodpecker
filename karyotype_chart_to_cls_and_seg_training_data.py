@@ -57,9 +57,9 @@ for img_fn in os.listdir(KYT_IMG_DIR):
     file_ext = fn_splits[3]
 
     karyotype = Karyotype(os.path.join(KYT_IMG_DIR, img_fn))
-    karyotype.read_karyotype()
+    chromo_cntr_dicts_orgby_cy = karyotype.read_karyotype()
 
-    for cntrs in karyotype.chromo_cntr_dicts:
+    for cntrs in chromo_cntr_dicts_orgby_cy:
         for cntr in cntrs:
             # 生成分割模型训练数据
             # 掩码图像crop_picture分辨率为 1280x1024，二值化后的图像，背景为黑色，染色体为白色

@@ -1,0 +1,1301 @@
+2024-02-06 16:54:18.125 | INFO     | __main__:<module>:85 -     vvvvvvvvvv  开始处理新报告图：A2312279485.076  vvvvvvvvvv
+2024-02-06 16:54:18.126 | INFO     | __main__:<module>:86 -
+2024-02-06 16:54:18.126 | INFO     | utils.time_logger:estimate_cur_case_end_time:93 -
+A2312279485.076 started, estimated end on: 2024-02-06 16:54:45
+2024-02-06 16:54:18.181 | INFO     | __main__:<module>:146 - AI识别结果获取完毕。AI分割识别出的染色体共 46 条。
+2024-02-06 16:54:18.223 | INFO     | __main__:<module>:182 - 核型报告图解析完毕。核型报告图中的染色体共 46 条。
+2024-02-06 16:54:18.591 | INFO     | __main__:<module>:265 - 报告图中的染色体: 19 同 AI识别的染色体: 19 最匹配, 相似度: 57.14 , 颠倒? False。
+2024-02-06 16:54:18.985 | INFO     | __main__:<module>:265 - 报告图中的染色体: 19 同 AI识别的染色体: 19 最匹配, 相似度: 40.00 , 颠倒? False。
+2024-02-06 16:54:19.375 | INFO     | __main__:<module>:265 - 报告图中的染色体: 20 同 AI识别的染色体: 19 最匹配, 相似度: 40.00 , 颠倒? True。
+2024-02-06 16:54:19.774 | INFO     | __main__:<module>:265 - 报告图中的染色体: 20 同 AI识别的染色体: 20 最匹配, 相似度: 69.23 , 颠倒? True。
+2024-02-06 16:54:20.120 | INFO     | __main__:<module>:265 - 报告图中的染色体: 21 同 AI识别的染色体: 21 最匹配, 相似度: 50.00 , 颠倒? False。
+2024-02-06 16:54:20.462 | INFO     | __main__:<module>:265 - 报告图中的染色体: 21 同 AI识别的染色体: 21 最匹配, 相似度: 20.00 , 颠倒? True。
+2024-02-06 16:54:20.844 | INFO     | __main__:<module>:265 - 报告图中的染色体: 22 同 AI识别的染色体: 22 最匹配, 相似度: 40.00 , 颠倒? False。
+2024-02-06 16:54:20.847 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 1 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.850 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.853 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 1 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.855 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.859 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 2 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.862 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.865 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 2 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.867 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.870 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 11 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.872 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.875 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 11 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.877 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.880 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 12 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.882 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.885 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 12 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.887 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.891 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 13 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.893 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.896 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 13 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.898 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.900 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 14 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.902 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.906 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 14 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.908 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.910 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 15 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.912 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.915 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 15 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.917 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.920 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 16 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.922 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.924 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 16 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.927 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.929 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 17 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.931 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.934 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 17 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.937 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.939 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 18 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.941 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.943 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 18 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.945 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.947 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 19 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.950 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.952 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 19 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.954 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.957 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 20 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.959 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.961 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 20 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.963 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.967 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 3 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.969 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.973 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 3 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.975 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.977 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 21 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.978 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.981 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 21 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.983 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.985 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 22 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.987 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.989 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 22 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.991 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.994 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: X met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.996 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:20.999 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: X met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:21.001 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:21.004 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 4 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:21.006 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:21.009 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 5 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:21.012 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:21.015 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 5 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:21.017 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:21.020 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 6 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:21.022 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:21.025 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 6 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:21.029 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:21.032 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 6 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:21.034 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:21.037 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 7 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:21.040 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:21.043 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 7 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:21.045 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:21.047 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 8 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:21.049 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:21.052 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 8 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:21.054 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:21.057 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 9 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:21.059 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:21.062 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 9 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:21.064 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:21.067 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 10 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:21.069 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:21.072 | ERROR    | __main__:<module>:230 - Case: A2312279485.076, On step:sim0 using KYT Chromo: 22 match AI Chromo: 10 met Error: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:21.074 | ERROR    | __main__:<module>:238 - Traceback (most recent call last):
+  File "D:\prj\github\woodpecker\evaluate_ai_result.py", line 203, in <module>
+    sim1 = sift_similarity_on_roi(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\prj\github\woodpecker\utils\chromo_cv_utils.py", line 57, in sift_similarity_on_roi
+    good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+                            ^^^^
+ValueError: not enough values to unpack (expected 2, got 1)
+
+2024-02-06 16:54:21.570 | INFO     | __main__:<module>:265 - 报告图中的染色体: X 同 AI识别的染色体: X 最匹配, 相似度: 67.74 , 颠倒? True。
+2024-02-06 16:54:22.040 | INFO     | __main__:<module>:265 - 报告图中的染色体: X 同 AI识别的染色体: X 最匹配, 相似度: 50.00 , 颠倒? True。
+2024-02-06 16:54:22.499 | INFO     | __main__:<module>:265 - 报告图中的染色体: 13 同 AI识别的染色体: 13 最匹配, 相似度: 68.42 , 颠倒? True。
+2024-02-06 16:54:22.942 | INFO     | __main__:<module>:265 - 报告图中的染色体: 13 同 AI识别的染色体: 13 最匹配, 相似度: 53.85 , 颠倒? True。
+2024-02-06 16:54:23.351 | INFO     | __main__:<module>:265 - 报告图中的染色体: 14 同 AI识别的染色体: 14 最匹配, 相似度: 88.89 , 颠倒? True。
+2024-02-06 16:54:23.785 | INFO     | __main__:<module>:265 - 报告图中的染色体: 14 同 AI识别的染色体: 14 最匹配, 相似度: 31.25 , 颠倒? False。
+2024-02-06 16:54:24.220 | INFO     | __main__:<module>:265 - 报告图中的染色体: 15 同 AI识别的染色体: 15 最匹配, 相似度: 50.00 , 颠倒? True。
+2024-02-06 16:54:24.651 | INFO     | __main__:<module>:265 - 报告图中的染色体: 15 同 AI识别的染色体: 15 最匹配, 相似度: 55.00 , 颠倒? True。
+2024-02-06 16:54:25.054 | INFO     | __main__:<module>:265 - 报告图中的染色体: 16 同 AI识别的染色体: 16 最匹配, 相似度: 38.46 , 颠倒? True。
+2024-02-06 16:54:25.512 | INFO     | __main__:<module>:265 - 报告图中的染色体: 16 同 AI识别的染色体: 16 最匹配, 相似度: 73.68 , 颠倒? True。
+2024-02-06 16:54:25.927 | INFO     | __main__:<module>:265 - 报告图中的染色体: 17 同 AI识别的染色体: 17 最匹配, 相似度: 66.67 , 颠倒? True。
+2024-02-06 16:54:26.328 | INFO     | __main__:<module>:265 - 报告图中的染色体: 17 同 AI识别的染色体: 17 最匹配, 相似度: 61.54 , 颠倒? False。
+2024-02-06 16:54:26.790 | INFO     | __main__:<module>:265 - 报告图中的染色体: 18 同 AI识别的染色体: 18 最匹配, 相似度: 64.71 , 颠倒? True。
+2024-02-06 16:54:27.218 | INFO     | __main__:<module>:265 - 报告图中的染色体: 18 同 AI识别的染色体: 18 最匹配, 相似度: 69.23 , 颠倒? True。
+2024-02-06 16:54:27.741 | INFO     | __main__:<module>:265 - 报告图中的染色体: 6 同 AI识别的染色体: 6 最匹配, 相似度: 60.00 , 颠倒? False。
+2024-02-06 16:54:28.256 | INFO     | __main__:<module>:265 - 报告图中的染色体: 6 同 AI识别的染色体: 6 最匹配, 相似度: 53.85 , 颠倒? True。
+2024-02-06 16:54:28.770 | INFO     | __main__:<module>:265 - 报告图中的染色体: 7 同 AI识别的染色体: 7 最匹配, 相似度: 82.14 , 颠倒? True。
+2024-02-06 16:54:29.275 | INFO     | __main__:<module>:265 - 报告图中的染色体: 7 同 AI识别的染色体: 7 最匹配, 相似度: 66.67 , 颠倒? True。
+2024-02-06 16:54:29.795 | INFO     | __main__:<module>:265 - 报告图中的染色体: 8 同 AI识别的染色体: 8 最匹配, 相似度: 48.28 , 颠倒? False。
+2024-02-06 16:54:30.289 | INFO     | __main__:<module>:265 - 报告图中的染色体: 8 同 AI识别的染色体: 8 最匹配, 相似度: 51.85 , 颠倒? True。
+2024-02-06 16:54:30.779 | INFO     | __main__:<module>:265 - 报告图中的染色体: 9 同 AI识别的染色体: 9 最匹配, 相似度: 47.62 , 颠倒? False。
+2024-02-06 16:54:31.245 | INFO     | __main__:<module>:265 - 报告图中的染色体: 9 同 AI识别的染色体: 9 最匹配, 相似度: 76.47 , 颠倒? True。
+2024-02-06 16:54:31.710 | INFO     | __main__:<module>:265 - 报告图中的染色体: 10 同 AI识别的染色体: 10 最匹配, 相似度: 68.42 , 颠倒? False。
+2024-02-06 16:54:32.209 | INFO     | __main__:<module>:265 - 报告图中的染色体: 10 同 AI识别的染色体: 10 最匹配, 相似度: 52.63 , 颠倒? True。
+2024-02-06 16:54:32.699 | INFO     | __main__:<module>:265 - 报告图中的染色体: 11 同 AI识别的染色体: 11 最匹配, 相似度: 52.00 , 颠倒? False。
+2024-02-06 16:54:33.177 | INFO     | __main__:<module>:265 - 报告图中的染色体: 11 同 AI识别的染色体: 11 最匹配, 相似度: 56.00 , 颠倒? True。
+2024-02-06 16:54:33.654 | INFO     | __main__:<module>:265 - 报告图中的染色体: 12 同 AI识别的染色体: 12 最匹配, 相似度: 35.00 , 颠倒? True。
+2024-02-06 16:54:34.112 | INFO     | __main__:<module>:265 - 报告图中的染色体: 12 同 AI识别的染色体: 12 最匹配, 相似度: 82.61 , 颠倒? True。
+2024-02-06 16:54:34.703 | INFO     | __main__:<module>:265 - 报告图中的染色体: 1 同 AI识别的染色体: 1 最匹配, 相似度: 48.89 , 颠倒? True。
+2024-02-06 16:54:35.287 | INFO     | __main__:<module>:265 - 报告图中的染色体: 1 同 AI识别的染色体: 1 最匹配, 相似度: 63.27 , 颠倒? True。
+2024-02-06 16:54:35.847 | INFO     | __main__:<module>:265 - 报告图中的染色体: 2 同 AI识别的染色体: 2 最匹配, 相似度: 55.10 , 颠倒? False。
+2024-02-06 16:54:36.464 | INFO     | __main__:<module>:265 - 报告图中的染色体: 2 同 AI识别的染色体: 2 最匹配, 相似度: 52.94 , 颠倒? True。
+2024-02-06 16:54:36.999 | INFO     | __main__:<module>:265 - 报告图中的染色体: 3 同 AI识别的染色体: 3 最匹配, 相似度: 58.82 , 颠倒? True。
+2024-02-06 16:54:37.568 | INFO     | __main__:<module>:265 - 报告图中的染色体: 3 同 AI识别的染色体: 3 最匹配, 相似度: 48.72 , 颠倒? True。
+2024-02-06 16:54:38.085 | INFO     | __main__:<module>:265 - 报告图中的染色体: 4 同 AI识别的染色体: 6 最匹配, 相似度: 57.89 , 颠倒? True。
+2024-02-06 16:54:38.600 | INFO     | __main__:<module>:265 - 报告图中的染色体: 4 同 AI识别的染色体: 4 最匹配, 相似度: 40.00 , 颠倒? True。
+2024-02-06 16:54:39.126 | INFO     | __main__:<module>:265 - 报告图中的染色体: 5 同 AI识别的染色体: 5 最匹配, 相似度: 64.10 , 颠倒? True。
+2024-02-06 16:54:39.607 | INFO     | __main__:<module>:265 - 报告图中的染色体: 5 同 AI识别的染色体: 5 最匹配, 相似度: 66.67 , 颠倒? True。
+2024-02-06 16:54:39.608 | INFO     | utils.time_logger:case_finished:61 -
+A2312279485.076 finished 2024-02-06 16:54:39, cost: 21.48s, avg: 27.64s, T641-P86-L555.
+2024-02-06 16:54:39.608 | INFO     | utils.time_logger:estimate_end_time:108 -
+End of all cases estimated on: 2024-02-06 21:10:19
+2024-02-06 16:54:39.609 | INFO     | __main__:<module>:302 - A2312279485.076处理完毕, 准确率: 0.93
+2024-02-06 16:54:39.609 | INFO     | __main__:<module>:303 -
+2024-02-06 16:54:39.610 | INFO     | __main__:<module>:304 -     ^^^^^^^^^^  处理完毕  ^^^^^^^^^^
+2024-02-06 16:54:39.610 | INFO     | __main__:<module>:305 -

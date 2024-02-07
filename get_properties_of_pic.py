@@ -1,12 +1,4 @@
 # -*- coding: utf-8 -*-
-__author__ = "王磊"
-__copyright__ = "Copyright 2023 四川科莫生医疗科技有限公司"
-__credits__ = ["王磊"]
-__maintainer__ = "王磊"
-__email__ = "lei.wang@kemoshen.com"
-__version__ = "0.0.1"
-__status__ = "Development"
-
 """
 Module of generating training data for  classifier and segmentation model from karyotype chart.
 
@@ -17,11 +9,17 @@ Usage:
 Author: Lei Wang
 Date: Jan 19, 2024
 """
-
 import os
 import sys
+from utils.chromo_cv_utils import cv_imread
 
-from utils.utils import cv_imread
+__author__ = "王磊"
+__copyright__ = "Copyright 2023 四川科莫生医疗科技有限公司"
+__credits__ = ["王磊"]
+__maintainer__ = "王磊"
+__email__ = "lei.wang@kemoshen.com"
+__version__ = "0.0.1"
+__status__ = "Development"
 
 
 if __name__ == "__main__":
