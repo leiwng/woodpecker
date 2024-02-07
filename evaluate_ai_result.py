@@ -34,8 +34,8 @@ from utils.chromo_cv_utils import (
     contour_bbox_img,
     sift_similarity_on_roi,
 )
-from utils.logger import log
-from utils.time_logger import TimeLogger
+from evaluate_ai_result_logger import log
+from evaluate_ai_result_time_logger import TimeLogger
 
 
 # 人工核型报告图图片目录
@@ -73,7 +73,7 @@ ALL_CASE_PIC_ACC_RATIO_SUM = 0
 # 初始化时间记录器
 case_pic_dirs = os.listdir(AI_RESULT_ROOT_DIR)
 case_pic_total = len(case_pic_dirs)
-t_logger = TimeLogger(case_pic_total)
+t_logger = TimeLogger(log, case_pic_total)
 
 # 根据AI的识别结果目录，同核型报告图进行比对，计算准确率
 # 首先遍历AI识别结果目录，然后根据文件名找到对应的核型报告图，
@@ -168,6 +168,9 @@ for case_pic_dir in case_pic_dirs:
             chromo_cntr_dict["bbox_bbg"] = chromo_bbox_bbg
             chromo_cntr_dict["bbox_wbg"] = chromo_bbox_wbg
             kyt_chromo_result.append(chromo_cntr_dict)
+
+    # 按染色体编号和cx排序
+    kyt_chromo_result = sorted(kyt_chromo_result, key=lambda x: (x['chromo_id'], x['chromo_idx']))
 
     # 打印核型报告图中的染色体信息图片用于调试
     # canvas = kyt_chart.img["img"].copy()
@@ -322,7 +325,7 @@ log.info(f"所有案例下的报告图评估完毕。AI推理的平均准确率�
 
 # 保存评估结果
 # 保存评估结果的文件名为eva_result_开头后面接当前时间
-EVA_RESULT_FN = f"eva_result_{time.strftime('%Y%m%d%H%M%S')}.json"
+EVA_RESULT_FN = f"evaluate_ai_result_{time.strftime('%Y%m%d%H%M%S')}.json"
 
 if not os.path.exists(EVA_RESULT_DIR):
     os.makedirs(EVA_RESULT_DIR)

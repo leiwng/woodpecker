@@ -19,7 +19,7 @@ import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 
-from time_logger import TimeLogger
+from evaluate_ai_result_time_logger import TimeLogger
 
 #global constant
 # BIN_IMG_THRESH_4_CHROMO = 235
