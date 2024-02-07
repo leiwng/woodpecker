@@ -275,7 +275,7 @@ for case_pic_dir in case_pic_dirs:
         if MET_EXP:
             # 保存报告图中的染色体图片用于调试
             dbg_pic_fn = (
-                f"{case_pic_dir}.K.sim-exp-kytID{kyt_chromo["chromo_id"]}_{kyt_chromo["chromo_idx"]}.PNG"
+                f"{case_pic_dir}.K.sim-exp-kytID{kyt_chromo["chromo_id"]}_{kyt_chromo["cx"]}.PNG"
             )
             dbg_pic_fp = os.path.join(DBG_PIC_DIR, dbg_pic_fn)
             cv_imwrite(dbg_pic_fp, kyt_chromo["bbox_bbg"])
