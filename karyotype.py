@@ -29,9 +29,9 @@ __status__ = "Development"
 
 import os
 import configparser
+from copy import deepcopy
 import cv2
 import numpy as np
-from copy import deepcopy
 from utils.chromo_cv_utils import (
     find_external_contours,
     get_distance_between_two_contours,

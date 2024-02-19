@@ -41,7 +41,8 @@ class Logger:
     """
 
     @staticmethod
-    def log() -> logger:
+    # def log() -> logger:
+    def log():
         """main func of logger
 
         Returns:

@@ -40,7 +40,7 @@ class Logger:
             os.mkdir(LogPath)
 
         # 日志文件
-        log_file = os.path.join(LogPath, "evaluate_ai_result2.log")
+        log_file = os.path.join(LogPath, "app.log")
 
         # loguru日志
         # more: https://github.com/Delgan/loguru#ready-to-use-out-of-the-box-without-boilerplate

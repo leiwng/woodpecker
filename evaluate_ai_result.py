@@ -34,23 +34,25 @@ from utils.chromo_cv_utils import (
     contour_bbox_img,
     sift_similarity_on_roi,
 )
-from evaluate_ai_result_logger import log
+from evaluate_ai_result_logger import Logger
 from evaluate_ai_result_time_logger import TimeLogger
 
 
-# # 人工核型报告图图片目录
-# KYT_IMG_DIR = r"E:\染色体测试数据\240204-评估240202测试集AI推理结果\KYT_IMG"
-# # AI推理结果的根目录
-# AI_RESULT_ROOT_DIR = r"E:\染色体测试数据\240204-评估240202测试集AI推理结果\AI_RESULT"
-# # 核型报告图解析的结果图片保存目录，用于调试
-# DBG_PIC_DIR = r"E:\染色体测试数据\240204-评估240202测试集AI推理结果\DBG_PIC"
-# # 保存评估结果保存的目录
-# EVA_RESULT_DIR = r"E:\染色体测试数据\240204-评估240202测试集AI推理结果\EVA_RESULT"
+# 人工核型报告图图片目录
+KYT_IMG_DIR = r"E:\染色体测试数据\240204-评估240202测试集AI推理结果\KYT_IMG"
+# AI推理结果的根目录
+AI_RESULT_ROOT_DIR = r"E:\染色体测试数据\240204-评估240202测试集AI推理结果\AI_RESULT"
+# 核型报告图解析的结果图片保存目录，用于调试
+DBG_PIC_DIR = r"E:\染色体测试数据\240204-评估240202测试集AI推理结果\DBG_PIC"
+# 保存评估结果保存的目录
+EVA_RESULT_DIR = r"E:\染色体测试数据\240204-评估240202测试集AI推理结果\EVA_RESULT"
 
-KYT_IMG_DIR = r"E:\染色体测试数据\240202-测试AI结果评估程序\240206-bug_fix_4_sift_met_exp\KYT_IMG"
-AI_RESULT_ROOT_DIR = r"E:\染色体测试数据\240202-测试AI结果评估程序\240206-bug_fix_4_sift_met_exp\AI_RESULT"
-DBG_PIC_DIR = r"E:\染色体测试数据\240202-测试AI结果评估程序\240206-bug_fix_4_sift_met_exp\DBG_PIC"
-EVA_RESULT_DIR = r"E:\染色体测试数据\240202-测试AI结果评估程序\240206-bug_fix_4_sift_met_exp\EVA_RESULT"
+log = Logger.log()
+
+# KYT_IMG_DIR = r"E:\染色体测试数据\240202-测试AI结果评估程序\240206-bug_fix_4_sift_met_exp\KYT_IMG"
+# AI_RESULT_ROOT_DIR = r"E:\染色体测试数据\240202-测试AI结果评估程序\240206-bug_fix_4_sift_met_exp\AI_RESULT"
+# DBG_PIC_DIR = r"E:\染色体测试数据\240202-测试AI结果评估程序\240206-bug_fix_4_sift_met_exp\DBG_PIC"
+# EVA_RESULT_DIR = r"E:\染色体测试数据\240202-测试AI结果评估程序\240206-bug_fix_4_sift_met_exp\EVA_RESULT"
 
 if not os.path.exists(KYT_IMG_DIR):
     log.info(f"核型报告图目录: {KYT_IMG_DIR} 不存在")
@@ -85,7 +87,7 @@ ALL_CASE_PIC_ACC_RATIO_SUM = 0
 # 初始化时间记录器
 case_pic_dirs = os.listdir(AI_RESULT_ROOT_DIR)
 case_pic_total = len(case_pic_dirs)
-t_logger = TimeLogger(log, case_pic_total)
+t_log = TimeLogger(log, case_pic_total)
 
 # 根据AI的识别结果目录，同核型报告图进行比对，计算准确率
 # 首先遍历AI识别结果目录，然后根据文件名找到对应的核型报告图，
@@ -103,7 +105,7 @@ for case_pic_dir in case_pic_dirs:
     log.info(f"    vvvvvvvvvv  开始处理新报告图：{case_pic_dir}  vvvvvvvvvv")
     log.info("  ")
 
-    t_logger.case_started(case_pic_dir)
+    t_log.case_started(case_pic_dir)
 
     # 初始化该案例和图号的评估结果的存储结构
     eva_result_dict = {"case_pic_id": case_pic_dir}
@@ -321,7 +323,7 @@ for case_pic_dir in case_pic_dirs:
     eva_result.append(eva_result_dict)
 
     # 记录当前case+pic的时间
-    t_logger.case_finished(case_pic_dir)
+    t_log.case_finished(case_pic_dir)
 
     log.info(f"{case_pic_dir}处理完毕, 准确率: {eva_result_dict['acc_ratio']:.2f}")
     log.info(" ")
@@ -329,7 +331,7 @@ for case_pic_dir in case_pic_dirs:
     log.info(" ")
 
 # 所有case+pic处理完毕记录总处理时间
-t_logger.all_finished()
+t_log.all_finished()
 
 # 所有案例下的所有报告图跑完了，计算平均准确率
 acc_ratio_avg = ALL_CASE_PIC_ACC_RATIO_SUM / len(eva_result)

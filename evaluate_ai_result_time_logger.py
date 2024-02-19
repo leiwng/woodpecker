@@ -19,7 +19,7 @@ __status__ = "Development"
 
 
 import time
-from utils.logger import log
+from evaluate_ai_result_logger import log
 
 NEW_LINE = "\n"
 
