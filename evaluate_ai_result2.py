@@ -1,13 +1,18 @@
 # -*- coding: utf-8 -*-
 """
 Module for evaluating AI segmentation and classification result.
+1. Use three process to evaluate AI result:
+    a. Original AI chromosome image use SIFT to match with karyotype chromosome image.
+    b. Use CLAHE to enhance AI chromosome image, then use SIFT to match with karyotype chromosome image.
+    c. Use cv2.matchShapes to match AI chromosome contour with karyotype chromosome contour.
+2. The AI is considered correct whenever the result of any of the above three processes indicates that the AI is correct.
 
 Usage:
     - Import this module using `import mymodule`.
     - Use the functions provided by this module as needed.
 
 Author: Lei Wang
-Date: Feb 2, 2024
+Date: Feb 23, 2024
 """
 
 
@@ -25,6 +30,8 @@ import time
 import json
 import traceback
 from pathlib import Path
+from copy import deepcopy
+from typing import Dict, List, Any
 import cv2
 import numpy as np
 from karyotype import Karyotype
@@ -73,24 +80,6 @@ if not os.path.exists(DBG_PIC_DIR):
 if not os.path.exists(EVA_RESULT_DIR):
     os.makedirs(EVA_RESULT_DIR)
 
-# 记录评估结果的文件的数据结构, 按照案例号和图号为key的dict数组
-eva_result = []
-"""
-[
-    {
-        "case_pic_id": "A2312018777.046",
-        0: {kyt_chromo_id: "1", ai_chromo_id: "1", similarity: 0.9},
-        1: {kyt_chromo_id: "2", ai_chromo_id: "2", similarity: 0.8},
-        ...
-        23: {ai_chromo_id: "Y", kyt_chromo_id: "Y", similarity: 0.7}
-        "acc_ratio": AI结果和核型报告图匹配的染色体数量/总染色体数量
-    }
-    ...
-]
-"""
-# 累计每个案例下报告图的AI准确率的算数和
-ALL_CASE_PIC_ACC_RATIO_SUM = 0
-
 # 初始化时间记录器
 case_pic_dirs = os.listdir(AI_RESULT_ROOT_DIR)
 case_pic_total = len(case_pic_dirs)
@@ -109,7 +98,7 @@ for case_pic_dir in case_pic_dirs:
         continue
 
     log.info("  ")
-    log.info(f"    vvvvvvvvvv  开始处理新报告图：{case_pic_dir}  vvvvvvvvvv")
+    log.info(f"    vvvvvvvvvv  开始处理新CASE: {case_pic_dir}  vvvvvvvvvv")
     log.info("  ")
 
     t_log.case_started(case_pic_dir)
@@ -119,8 +108,12 @@ for case_pic_dir in case_pic_dirs:
 
     # 用于保存AI识别的染色体信息
     ai_chromo_result = []
+    # 将AI结果按染色体序号chromo_idx进行组织
+    ChromoData = Dict[str, Any]
+    ai_chromo_orgby_chromo_idx: Dict[int, List[ChromoData]] = {}
 
     # 逐个获取AI结果
+    log.info("提取AI推理结果")
     for chromo_dir in os.listdir(case_pic_dir_fp):
         # 获取AI结果染色体图片目录的full path
         chromo_dir_fp = os.path.join(case_pic_dir_fp, chromo_dir)
@@ -144,11 +137,11 @@ for case_pic_dir in case_pic_dirs:
 
             chromo_idx = int(chromo_dir)
             if chromo_idx == 22:
-                chromo_id = "X"
+                chromo_id = "X" # pylint: disable=invalid-name
             elif chromo_idx == 23:
-                chromo_id = "Y"
+                chromo_id = "Y" # pylint: disable=invalid-name
             else:
-                chromo_id = str(chromo_idx + 1)
+                chromo_id = str(chromo_idx + 1) # pylint: disable=invalid-name
 
             chromo_cntr = find_external_contours(chromo_img, 253)[0]
             grayscale = cv2.cvtColor(chromo_img, cv2.COLOR_BGR2GRAY)
@@ -156,22 +149,31 @@ for case_pic_dir in case_pic_dirs:
             cv2.drawContours(chromo_mask, [chromo_cntr], -1, 255, thickness=cv2.FILLED)
             chromo_roi = cv2.bitwise_and(grayscale, grayscale, mask=chromo_mask)
             chromo_bbox_bbg, chromo_bbox_wbg = contour_bbox_img(chromo_img, chromo_cntr)
-
-            ai_chromo_result.append(
-                {
+            chromo_info_dict = {
                     "img": chromo_img,
                     "idx": chromo_idx,
                     "id": chromo_id,
                     "cntr": find_external_contours(chromo_img, 253)[0],
                     "roi": chromo_roi,
-                    "position_idx": int(os.path.splitext(chromo_pic_fn)[0]),
+                    "position": int(os.path.splitext(chromo_pic_fn)[0]),
                     "bbox_bbg": chromo_bbox_bbg,
                     "bbox_wbg": chromo_bbox_wbg,
-                }
-            )
+            }
+            # 保存到相关的数据结构中
+            ai_chromo_result.append(deepcopy(chromo_info_dict))
+            if chromo_idx not in ai_chromo_orgby_chromo_idx:
+                ai_chromo_orgby_chromo_idx[chromo_idx] = []
+            ai_chromo_orgby_chromo_idx[chromo_idx].append(deepcopy(chromo_info_dict))
 
-    log.info(f"AI识别结果获取完毕。AI分割识别出的染色体共 {len(ai_chromo_result)} 条。")
+    # 按染色体编号和cx排序
+    ai_chromo_result = sorted(ai_chromo_result, key=lambda x: (x['idx'], x['position']))
+    for chromos in ai_chromo_orgby_chromo_idx.values():
+        chromos.sort(key=lambda x: x['position'])
 
+    log.info(f"AI推理结果获取完毕。AI分割识别出的染色体共 {len(ai_chromo_result)} 条。")
+
+    log.info("开始解析核型报告图中的染色体信息")
+    
     # 获取对应案例和图号的核型报告图
     kyt_img_fn = f"{case_pic_dir}.K.JPG"
     kyt_img_fp = os.path.join(KYT_IMG_DIR, kyt_img_fn)
@@ -181,6 +183,7 @@ for case_pic_dir in case_pic_dirs:
 
     # 简化核型报告图中的染色体信息的组织结构，并计算bbox
     kyt_chromo_result = []
+    kyt_chromo_orgby_chromo_idx: Dict[int, List[ChromoData]] = {}
     for chromo_cntr_dicts in kyt_chromo_cntr_dicts_orgby_cy.values():
         for chromo_cntr_dict in chromo_cntr_dicts:
             chromo_bbox_bbg, chromo_bbox_wbg = contour_bbox_img(
@@ -189,9 +192,28 @@ for case_pic_dir in case_pic_dirs:
             chromo_cntr_dict["bbox_bbg"] = chromo_bbox_bbg
             chromo_cntr_dict["bbox_wbg"] = chromo_bbox_wbg
             kyt_chromo_result.append(chromo_cntr_dict)
+            chromo_idx = chromo_cntr_dict["chromo_idx"]
+            if chromo_idx not in kyt_chromo_orgby_chromo_idx:
+                kyt_chromo_orgby_chromo_idx[chromo_idx] = []
+            kyt_chromo_orgby_chromo_idx[chromo_idx].append(chromo_cntr_dict)
 
     # 按染色体编号和cx排序
     kyt_chromo_result = sorted(kyt_chromo_result, key=lambda x: (x['chromo_idx'], x['cx']))
+    # 将染色体的cx坐标转换为position,最左边的染色体为0, 依次递增
+    cur_chromo_idx = 0 # pylint: disable=invalid-name
+    pre_chromo_idx = 0 # pylint: disable=invalid-name
+    pos = 0 # pylint: disable=invalid-name
+    for chromo in kyt_chromo_result:
+        cur_chromo_idx = chromo["chromo_idx"]
+        if cur_chromo_idx != pre_chromo_idx:
+            pre_chromo_idx = cur_chromo_idx
+            pos = 0 # pylint: disable=invalid-name
+        chromo["position"] = pos
+        pos += 1
+    for chromos in kyt_chromo_orgby_chromo_idx.values():
+        chromos.sort(key=lambda x: x['cx'])
+        for i, chromo in enumerate(chromos):
+            chromo["position"] = i
 
     # 打印核型报告图中的染色体信息图片用于调试
     # canvas = kyt_chart.img["img"].copy()
@@ -293,7 +315,7 @@ for case_pic_dir in case_pic_dirs:
 
         try:
             log.info(
-                f"报告图中的染色体: {KYT_CHROMO_ON_MAX['chromo_id']}-{KYT_CHROMO_ON_MAX["cx"]} 同 AI识别的染色体: {AI_CHROMO_ON_MAX['id']}-{AI_CHROMO_ON_MAX["position_idx"]} 最匹配, 相似度: {MAX_SIM:.2f} , 颠倒? {UP_SIDE_DOWN}。"
+                f"报告图中的染色体: {KYT_CHROMO_ON_MAX['chromo_id']}-{KYT_CHROMO_ON_MAX["cx"]} 同 AI识别的染色体: {AI_CHROMO_ON_MAX['id']}-{AI_CHROMO_ON_MAX["position"]} 最匹配, 相似度: {MAX_SIM:.2f} , 颠倒? {UP_SIDE_DOWN}。"
             )
 
             # 同当前AI识别的染色体相似度最高的核型报告图中的染色体已经找到
@@ -302,7 +324,7 @@ for case_pic_dir in case_pic_dirs:
                 "kyt_chromo_id": KYT_CHROMO_ON_MAX["chromo_id"],
                 "kyt_chromo_cx": KYT_CHROMO_ON_MAX["cx"],
                 "ai_chromo_id": AI_CHROMO_ON_MAX["id"],
-                "ai_chromo_position_idx": AI_CHROMO_ON_MAX["position_idx"],
+                "ai_chromo_position_idx": AI_CHROMO_ON_MAX["position"],
                 "similarity": MAX_SIM,
                 "UP_SIDE_DOWN": UP_SIDE_DOWN,
             }

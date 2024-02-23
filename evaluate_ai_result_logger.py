@@ -42,17 +42,17 @@ class Logger:
 
     @staticmethod
     # def log() -> logger:
-    def log():
+    def log(log_path=LogPath, log_filename="app.log"):
         """main func of logger
 
         Returns:
             logger: _description_
         """
-        if not os.path.exists(LogPath):
-            os.mkdir(LogPath)
+        if not os.path.exists(log_path):
+            os.mkdir(log_path)
 
         # 日志文件
-        log_file = os.path.join(LogPath, "evaluate_ai_result.log")
+        log_file = os.path.join(log_path, log_filename)
 
         # loguru日志
         # more: https://github.com/Delgan/loguru#ready-to-use-out-of-the-box-without-boilerplate
@@ -85,6 +85,5 @@ class Logger:
         )
 
         return logger
-
 
 log = Logger().log()

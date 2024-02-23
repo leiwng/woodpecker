@@ -10,6 +10,7 @@
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "cSpell.words": [
+        "CLAHE",
         "cntr",
         "cntrs",
         "cnts",
