@@ -1,12 +1,4 @@
 # -*- coding: utf-8 -*-
-import itertools
-from math import cos, fabs, radians, sin, sqrt, pi, ceil
-from skimage import morphology
-
-import cv2
-import numpy as np
-from matplotlib import pyplot as plt
-
 """染色体图像计算机视觉处理库
 本模块包含染色体图像计算机视觉处理相关的基础工具函数.
     1. 翻转变换 flip
@@ -19,6 +11,7 @@ Author: Lei Wang
 Date: May 23, 2022
 """
 
+
 __author__ = "王磊"
 __copyright__ = "Copyright 2023 四川科莫生医疗科技有限公司"
 __credits__ = ["王磊"]
@@ -28,17 +21,190 @@ __version__ = "0.0.1"
 __status__ = "Development"
 
 
+import itertools
+from math import cos, fabs, radians, sin, sqrt, pi, ceil
+from skimage import morphology
+
+import cv2
+import numpy as np
+from matplotlib import pyplot as plt
+
+
 MAX_DISTANCE = 99999
 SMALL_CONTOUR_AREA_OF_CHROMO = 10
 WRAPPER_SIZE_4_CHROMO_TOUCH_BORDER = 400
 
 
-def sift_similarity_on_roi(roi1, roi2):
+def feature_match_on_roi_for_flips(query_roi, target_roi):
+    """通过SIFT特征匹配算法,并使用不同的翻转(flip)方式(上下翻转0, 左右翻转1, 上下左右-1),
+    来计算两个ROI的相似度,
+    并返回最佳的flip方式, 相似度和最佳匹配时两个图像是否颠倒
+
+    Args:
+        query_roi (_type_): Region of interest 1.
+        target_roi (_type_): Region of interest 2.
+
+    Returns:
+        similarity (float): similarity score in %
+        flip_idx (int): 最佳的flip方式
+        upside_down (bool): 最佳匹配时两个图像是否颠倒
+    """
+    # Initialize SIFT detector
+    sift = cv2.SIFT_create()
+    # Initialize BFMatcher
+    bf = cv2.BFMatcher()
+    # Detect keypoints and compute descriptors for target ROI
+    target_kpts, target_descs = sift.detectAndCompute(target_roi, None)
+
+    # 4个翻转方式 [不翻转, 上下翻转, 左右翻转, 上下左右翻转]
+    query_flip_rois = [
+        query_roi,
+        cv2.flip(query_roi, 0),
+        cv2.flip(query_roi, 1),
+        cv2.flip(query_roi, -1),
+    ]
+    matches_list = []
+    max_sim_flip_idx = 0
+    max_sim = 0
+    for roi_idx, roi in enumerate(query_flip_rois):
+        # Detect keypoints and compute descriptors for query ROI
+        query_kpts, query_descs = sift.detectAndCompute(roi, None)
+        # Match descriptors between ROIs
+        matches = bf.knnMatch(query_descs, target_descs, k=2)
+        good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
+        similarity = (
+            len(good_matches) / max(len(query_kpts), len(target_kpts)) * 100
+            if max(len(query_kpts), len(target_kpts)) > 0
+            else 0
+        )
+        matches_list.append(
+            {
+                "roi_idx": roi_idx,
+                "similarity": similarity,
+                "good_matches": good_matches,
+                "query_kpts": query_kpts,
+                "query_descs": query_descs,
+                "target_kpts": target_kpts,
+                "target_descs": target_descs,
+            }
+        )
+        if similarity > max_sim:
+            max_sim = similarity
+            max_sim_flip_idx = roi_idx
+
+    best_flip = matches_list[max_sim_flip_idx]
+    good_matches_on_best = best_flip["good_matches"]
+    if len(good_matches_on_best) > 5:
+        # 判断最佳匹配时两个图像是否相互颠倒
+        # get matched points
+        matched_pts = []
+        for match in good_matches_on_best:
+            query_idx = match[0].queryIdx
+            train_idx = match[0].trainIdx
+            query_kpt = best_flip["query_kpts"][query_idx]
+            target_kpt = best_flip["target_kpts"][train_idx]
+            # get matched points
+            query_pt = query_kpt.pt
+            target_pt = target_kpt.pt
+            matched_pts.append((query_pt, target_pt))
+        # 在query_roi中位于图像上半部分的匹配点,在target_roi上对应的匹配点有半数以上都位下半部分;
+        # 并且，在query_roi中位于图像下半部分的匹配点,在target_roi上对应的匹配点有半数以上都位上半部分;
+        # 则，说明两个图像是相互颠倒的
+        pts_amt = len(good_matches_on_best)
+        # print(f"pts_amt: {pts_amt}")
+        # 求在query_roi中位于图像上半部分的匹配点,在target_roi上对应的匹配点位下半部分的点的个数
+        query_roi_height_half = query_roi.shape[0] / 2
+        target_roi_height_half = target_roi.shape[0] / 2
+        mutually_upside_down_pts_amt = 0
+        for matched_pt in matched_pts:
+            query_pt, target_pt = matched_pt
+            if (
+                query_pt[1] < query_roi_height_half
+                and target_pt[1] > target_roi_height_half
+            ):
+                mutually_upside_down_pts_amt += 1
+            elif (
+                query_pt[1] > query_roi_height_half
+                and target_pt[1] < target_roi_height_half
+            ):
+                mutually_upside_down_pts_amt += 1
+            else:
+                continue
+        mutually_upside_down = mutually_upside_down_pts_amt / pts_amt > 0.5
+        upside_down = (
+            mutually_upside_down
+            if max_sim_flip_idx in [0, 2]
+            else not mutually_upside_down
+        )
+    else:
+        upside_down = False
+
+    return max_sim, max_sim_flip_idx, upside_down
+
+
+def best_feature_match_for_chromos(query_chromo, target_chromos):
+    """利用特征点匹配算法计算染色体图像的相似度
+
+    Args:
+        query_chromo (numpy ndarray): 查询染色体图像
+        target_chromos (list of numpy ndarray): 目标染色体图像列表
+
+    Returns:
+        最佳特征点匹配相似度, 最佳匹配的目标染色体
+    """
+    sim_score_max = 0
+    target_chromo_on_max = None
+    target_chromo_flip_idx_on_max = 0
+    target_chromo_upside_down_on_max = False
+    for target_chromo in target_chromos:
+        try:
+            sim_score, flip_idx, upside_down = feature_match_on_roi_for_flips(
+                query_chromo["bbox_bbg"], target_chromo["bbox_bbg"]
+            )
+        except Exception as e:  # pylint: disable=broad-except
+            print(e)
+            continue
+        if sim_score > sim_score_max:
+            sim_score_max = sim_score
+            target_chromo_on_max = target_chromo
+            target_chromo_flip_idx_on_max = flip_idx
+            target_chromo_upside_down_on_max = upside_down
+    return (
+        sim_score_max,
+        target_chromo_on_max,
+        target_chromo_flip_idx_on_max,
+        target_chromo_upside_down_on_max,
+    )
+
+
+def best_shape_match_for_chromos(query_chromo, target_chromos):
+    """计算染色体图像的形状差异度
+
+    Args:
+        query_chromo (numpy ndarray): 查询染色体图像
+        target_chromos (list of numpy ndarray): 目标染色体图像列表
+
+    Returns:
+        int: 最佳形状差异度, 最佳匹配的目标染色体
+    """
+    diff_score_min = 999999
+    target_chromo_on_min = None
+    for target_chromo in target_chromos:
+        diff_score = cv2.matchShapes(
+            query_chromo["cntr"], target_chromo["cntr"], cv2.CONTOURS_MATCH_I3, 0.0
+        )
+        if diff_score < diff_score_min:
+            diff_score_min = diff_score
+            target_chromo_on_min = target_chromo
+    return diff_score_min * 100, target_chromo_on_min
+
+
+def sift_similarity_on_roi(query_roi, target_roi):
     """通过SIFT特征匹配算法计算两个ROI的相似度, ROI是Region of Interest的缩写
 
     Args:
-        roi1 (_type_): Region of interest 1.
-        roi2 (_type_): Region of interest 2.
+        query_roi (_type_): Region of interest 1.
+        target_roi (_type_): Region of interest 2.
 
     Returns:
         float: similarity score in %
@@ -47,17 +213,17 @@ def sift_similarity_on_roi(roi1, roi2):
     sift = cv2.SIFT_create()
 
     # Detect keypoints and compute descriptors for ROIs
-    keypoints1, descriptors1 = sift.detectAndCompute(roi1, None)
-    keypoints2, descriptors2 = sift.detectAndCompute(roi2, None)
+    query_kpts, query_descs = sift.detectAndCompute(query_roi, None)
+    target_kpts, target_descs = sift.detectAndCompute(target_roi, None)
 
     # Match descriptors between ROIs
     bf = cv2.BFMatcher()
-    matches = bf.knnMatch(descriptors1, descriptors2, k=2)
+    matches = bf.knnMatch(query_descs, target_descs, k=2)
 
     good_matches = [[m] for m, n in matches if m.distance < 0.75 * n.distance]
 
     # 返回相似度
-    return len(good_matches) / max(len(keypoints1), len(keypoints2)) * 100
+    return len(good_matches) / max(len(query_kpts), len(target_kpts)) * 100
 
 
 def generate_distinct_colors(n):

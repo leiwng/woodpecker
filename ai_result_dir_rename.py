@@ -23,8 +23,8 @@ import os
 import sys
 
 
-KYT_IMG_DIR = r"E:\染色体测试数据\240204-评估240202测试集AI推理结果\KYT_IMG"
-AI_RESULT_ROOT_DIR = r"E:\染色体测试数据\240204-评估240202测试集AI推理结果\AI_RESULT"
+KYT_IMG_DIR = r"E:\染色体测试数据\240227-测试系统-L2402270001-重新findContour之后的AI识别数据\KYT_IMG"
+AI_RESULT_ROOT_DIR = r"E:\染色体测试数据\240227-测试系统-L2402270001-重新findContour之后的AI识别数据\AI_RESULT"
 
 # 缺的图
 # missed_case_pic_id = ["A2402020001.051", "A2402020001.135"]

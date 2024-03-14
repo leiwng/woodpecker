@@ -144,11 +144,11 @@ for case_pic_dir in case_pic_dirs:
 
             chromo_idx = int(chromo_dir)
             if chromo_idx == 22:
-                chromo_id = "X"
+                chromo_id = "X" # pylint: disable=invalid-name
             elif chromo_idx == 23:
-                chromo_id = "Y"
+                chromo_id = "Y" # pylint: disable=invalid-name
             else:
-                chromo_id = str(chromo_idx + 1)
+                chromo_id = str(chromo_idx + 1) # pylint: disable=invalid-name
 
             chromo_cntr = find_external_contours(chromo_img, 253)[0]
             grayscale = cv2.cvtColor(chromo_img, cv2.COLOR_BGR2GRAY)
@@ -253,7 +253,7 @@ for case_pic_dir in case_pic_dirs:
                 )
                 FINISH_STEP = "sim4"
 
-            except Exception as e:
+            except Exception as e: # pylint: disable=broad-except
                 MET_EXP = True
                 kyt_id = kyt_chromo["chromo_id"]
                 ai_id = ai_chromo["id"]
@@ -263,7 +263,7 @@ for case_pic_dir in case_pic_dirs:
                 # 默认在终端打印异常, 默认颜色为红色
                 traceback.print_exc()
                 # 接收错误信息
-                err = traceback.format_exc()
+                err = traceback.format_exc() # pylint: disable=invalid-name
                 print(err)
                 log.error(err)
 
@@ -356,6 +356,6 @@ eva_result_fp = os.path.join(EVA_RESULT_DIR, EVA_RESULT_FN)
 with open(eva_result_fp, "w", encoding="utf-8") as f:
     json.dump(eva_result, f, ensure_ascii=False, indent=4)
     # 最后一行写入这批AI识别结果的平均准确率
-    f.write(f"\n\n本批次({time.strftime('%Y%m%d%H%M%S')})平均准确率: {acc_ratio_avg}")
+    f.write(f"\n\n本批次({time.strftime('%Y-%m-%d_%H-%M-%S')})平均准确率: {acc_ratio_avg}")
 
 log.info(f"评估结果保存完毕。文件路径: {eva_result_fp}")
