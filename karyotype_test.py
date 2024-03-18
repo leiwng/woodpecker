@@ -28,7 +28,7 @@ from utils.chromo_cv_utils import (
 
 # KYT_ROOT_DIR = "E:\\染色体测试数据\\240129-用标准的报告图测试karyotpye.py"
 
-KYT_ROOT_DIR = "E:\\染色体测试数据\\240202-用标准的报告图测试karyotpye.py_完善中期图处理后再次测试"
+KYT_ROOT_DIR = r"E:\染色体测试数据\240318-ylf-报核型图解析出错-第4排染色体编号数量为5应该为6-出错图片"
 
 for dir_fn in os.listdir(KYT_ROOT_DIR):
     # 如果是文件则跳过
@@ -53,10 +53,15 @@ for dir_fn in os.listdir(KYT_ROOT_DIR):
         # 构造画布
         canvas = cv_imread(os.path.join(KYT_ROOT_DIR, dir_fn, fn))
 
+        # 绘制染色体编号轮廓
+        for cntrs in karyotype_chart.id_cntr_dicts_orgby_cy.values():
+            for cntr in cntrs:
+                cv2.drawContours(canvas, [cntr["cntr"]], -1, (255, 0, 0), 3)
+
         # 绘制染色体轮廓
         for cntrs in karyotype_chart.chromo_cntr_dicts_orgby_cy.values():
             for idx, cntr in enumerate(cntrs):
-                cv2.drawContours(canvas, [cntr["cntr"]], -1, (0, 0, 255), 1)
+                cv2.drawContours(canvas, [cntr["cntr"]], -1, (0, 255, 0), 1)
                 x = cntr["cx"]
                 y = cntr["cy"]
                 if idx % 2 == 0:
@@ -66,7 +71,7 @@ for dir_fn in os.listdir(KYT_ROOT_DIR):
                         (x, y),
                         cv2.FONT_HERSHEY_SIMPLEX,
                         0.45,
-                        (0, 255, 0),
+                        (0, 0, 255),
                         2,
                     )
                 else:
@@ -76,7 +81,7 @@ for dir_fn in os.listdir(KYT_ROOT_DIR):
                         (x - 8, y + 20),
                         cv2.FONT_HERSHEY_SIMPLEX,
                         0.45,
-                        (0, 255, 0),
+                        (0, 0, 255),
                         2,
                     )
 

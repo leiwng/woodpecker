@@ -49,6 +49,11 @@ BIN_THRESH = cfg.getint('General', 'BinThreshold')
 #用经验值去校正通过cv2.THRESH_TRIANGLE方式求得的二值化阈值
 BIN_THRESH_DELTA = cfg.getint('General', 'BinThresholdDelta')
 
+# 轮廓中心距离图片边界的最大距离
+# MaxContourDistanceToBorder = 5
+MAX_CNTR_DISTANCE_TO_BORDER = cfg.getint('General', 'MaxContourDistanceToBorder')
+
+
 # 允许最小轮廓的面积: 20 MinContourArea = 20
 MIN_CNTR_AREA = cfg.getint('General', 'MinContourArea')
 
@@ -310,6 +315,21 @@ class Karyotype:
         self.cntr_dicts = [{} for _ in range(len(cntrs))]
         for idx, cntr in enumerate(cntrs):
             self._gather_contours_dict(idx, cntr)
+
+        # 去掉紧贴边界的轮廓(对绵阳妇幼报告图的通用处理)
+        self.cntr_dicts = [
+            cntr for cntr in self.cntr_dicts if
+                (
+                    cntr['cx'] > MAX_CNTR_DISTANCE_TO_BORDER and
+                    cntr['cx'] < self.img['width'] - MAX_CNTR_DISTANCE_TO_BORDER
+                )
+                and
+                (
+                    cntr['cy'] > MAX_CNTR_DISTANCE_TO_BORDER and
+                    cntr['cy'] < self.img['height'] - MAX_CNTR_DISTANCE_TO_BORDER
+                )
+        ]
+
         # 从核型图中获取编号信息
         # After this call, self.id_cntr_dicts AND self.id_char_cntr_dicts is ready to use
         # AND self.id_cntr_dicts_orgby_cy AND self.id_char_cntr_dicts_orgby_cy is also ready to use
