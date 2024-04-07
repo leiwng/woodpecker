@@ -807,10 +807,11 @@ def find_external_contours_en(
         if (
             bin_type == cv2.THRESH_BINARY_INV + cv2.THRESH_TRIANGLE
             and bin_thresh_adjustment != 0
-            and tmp_bin_thresh + bin_thresh_adjustment > 0
         ):
             tmp_bin_thresh, _ = cv2.threshold(gray_img, 0, 255, bin_type)
             tmp_bin_thresh = tmp_bin_thresh + bin_thresh_adjustment
+            if tmp_bin_thresh < 0:
+                tmp_bin_thresh = 10
             dst_bin_thresh, bin_img = cv2.threshold(
                 gray_img, tmp_bin_thresh, 255, cv2.THRESH_BINARY_INV
             )

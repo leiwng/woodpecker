@@ -3,8 +3,7 @@
 Module for evaluating AI segmentation and classification result.
 
 Usage:
-    - Import this module using `import mymodule`.
-    - Use the functions provided by this module as needed.
+    - Only use SIFT algorithm to find most similarity chromosome from given chromosome
 
 Author: Lei Wang
 Date: Feb 2, 2024
