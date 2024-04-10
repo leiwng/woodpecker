@@ -26,16 +26,16 @@ __status__ = "Development"
 
 
 import os
-
 import time
 
 # import json
 import traceback
-from pathlib import Path
 from copy import deepcopy
 from typing import Dict, List, Any
 import cv2
 import numpy as np
+import pandas as pd
+
 from karyotype import Karyotype
 from utils.chromo_cv_utils import (
     cv_imread,
@@ -51,34 +51,32 @@ from evaluate_ai_result_logger import Logger
 from evaluate_ai_result_time_logger import TimeLogger
 
 
-EVA_ROOT_DIR = (
-    r"E:\染色体测试数据\240227-测试系统-L2402270001-重新findContour之后的AI识别数据"
-)
+EVA_ROOT_DIR = r"E:\染色体测试数据\240408-2307张-AI和人工对比评估"
 # 人工核型报告图图片目录
-KYT_IMG_DIR = r"E:\染色体测试数据\240227-测试系统-L2402270001-重新findContour之后的AI识别数据\KYT_IMG"
+HIS_KYT_IMG_DIR = r"E:\染色体测试数据\240408-2307张-AI和人工对比评估\HIS_KYT_IMG"
 # AI推理结果的根目录
-AI_RESULT_ROOT_DIR = r"E:\染色体测试数据\240227-测试系统-L2402270001-重新findContour之后的AI识别数据\AI_RESULT"
+AI_RESULT_ROOT_DIR = r"E:\染色体测试数据\240408-2307张-AI和人工对比评估\AI_RESULT"
 # 核型报告图解析的结果图片保存目录，用于调试
-DBG_PIC_DIR = r"E:\染色体测试数据\240227-测试系统-L2402270001-重新findContour之后的AI识别数据\DBG_PIC"
+DBG_PIC_DIR = r"E:\染色体测试数据\240408-2307张-AI和人工对比评估\DBG_PIC"
 # 保存评估结果保存的目录
-EVA_RESULT_DIR = r"E:\染色体测试数据\240227-测试系统-L2402270001-重新findContour之后的AI识别数据\EVA_RESULT"
+EVA_RESULT_DIR = r"E:\染色体测试数据\240408-2307张-AI和人工对比评估\EVA_RESULT"
 
 # 初始化日志
 # LogPath = Path(__file__).resolve().parent
-LogPath = EVA_ROOT_DIR  # pylint: disable=invalid-name
+LogPath = EVA_RESULT_DIR  # pylint: disable=invalid-name
 # BasePath = os.path.dirname(os.path.abspath(__file__))
 # LogPath = os.path.join(BasePath, "logs")
 CurrentFileName = os.path.splitext(os.path.basename(__file__))[0]
 LogFileName = f"{CurrentFileName}_{time.strftime('%Y-%m-%d_%H-%M-%S')}.log"
 log = Logger.log(LogPath, LogFileName)
 
-# KYT_IMG_DIR = r"E:\染色体测试数据\240202-测试AI结果评估程序\240206-bug_fix_4_sift_met_exp\KYT_IMG"
+# HIS_KYT_IMG_DIR = r"E:\染色体测试数据\240202-测试AI结果评估程序\240206-bug_fix_4_sift_met_exp\KYT_IMG"
 # AI_RESULT_ROOT_DIR = r"E:\染色体测试数据\240202-测试AI结果评估程序\240206-bug_fix_4_sift_met_exp\AI_RESULT"
 # DBG_PIC_DIR = r"E:\染色体测试数据\240202-测试AI结果评估程序\240206-bug_fix_4_sift_met_exp\DBG_PIC"
 # EVA_RESULT_DIR = r"E:\染色体测试数据\240202-测试AI结果评估程序\240206-bug_fix_4_sift_met_exp\EVA_RESULT"
 
-if not os.path.exists(KYT_IMG_DIR):
-    log.info(f"核型报告图目录: {KYT_IMG_DIR} 不存在")
+if not os.path.exists(HIS_KYT_IMG_DIR):
+    log.info(f"核型报告图目录: {HIS_KYT_IMG_DIR} 不存在")
 
 if not os.path.exists(AI_RESULT_ROOT_DIR):
     log.info(f"AI结果目录: {AI_RESULT_ROOT_DIR} 不存在")
@@ -97,6 +95,18 @@ t_log = TimeLogger(log, case_pic_total)
 # 记录所有图片的AI准确率评估值
 ai_correct_ratio_for_all_kyt = 0.0  # pylint: disable=invalid-name
 
+# dataframes for record error
+columns = [
+    "标本编号",
+    "图号",
+    "错误说明",
+    "轮廓差异度",
+    "特征点相似度",
+    "错误个数",
+    "错误类型",
+]
+err_df = pd.DataFrame(columns=columns)
+
 # 根据AI的识别结果目录，同核型报告图进行比对，计算准确率
 # 首先遍历AI识别结果目录，然后根据文件名找到对应的核型报告图，
 # 然后对报告图进行解析获得染色体信息，
@@ -112,6 +122,9 @@ for case_pic_dir in case_pic_dirs:
     log.info("  ")
     log.info(f"    vvvvvvvvvv  开始处理新CASE: {case_pic_dir}  vvvvvvvvvv")
     log.info("  ")
+
+    case_id = case_pic_dir.split(".")[0]
+    img_id = case_pic_dir.split(".")[1]
 
     t_log.case_started(case_pic_dir)
 
@@ -194,7 +207,7 @@ for case_pic_dir in case_pic_dirs:
     # 获取对应案例和图号的核型报告图
     kyt_img_fn = f"{case_pic_dir}.K.JPG"
     # kyt_img_fn = f"{case_pic_dir}.K.png"
-    kyt_img_fp = os.path.join(KYT_IMG_DIR, kyt_img_fn)
+    kyt_img_fp = os.path.join(HIS_KYT_IMG_DIR, kyt_img_fn)
     # 读取报告图中染色体的信息
     kyt_chart = Karyotype(kyt_img_fp)
     kyt_chromo_cntr_dicts_orgby_cy = kyt_chart.read_karyotype()
@@ -324,6 +337,18 @@ for case_pic_dir in case_pic_dirs:
                             log.info(
                                 f"AI染色体:{cur_chromo_id}-{cur_ai_chromo['pos']} 同报告图中的染色体: {best_shape_match_kyt_chromo['chromo_id']}-{best_shape_match_kyt_chromo['pos']} 最匹配,轮廓差异度:{diff_score_min:.2f}%;特征点相似度:{sim_score:.2f}%;颠倒?{upside_down}"
                             )
+                            new_err = {
+                                "标本编号": case_id,
+                                "图号": img_id,
+                                "错误说明": f"AI染色体:{cur_chromo_id}-{cur_ai_chromo['pos']} 极性错误",
+                                "轮廓差异度": f"{diff_score_min:.2f}%",
+                                "特征点相似度": f"{sim_score:.2f}%",
+                                "错误个数": 1,
+                                "错误类型": "极性",
+                            }
+                            err_df = pd.concat(
+                                [err_df, pd.DataFrame([new_err])], ignore_index=True
+                            )
 
                     except Exception as e:  # pylint: disable=broad-except
                         log.error(
@@ -360,6 +385,18 @@ for case_pic_dir in case_pic_dirs:
                         log.info(
                             f"AI染色体:{cur_chromo_id}-{cur_ai_chromo['pos']} 同报告图中的染色体: {kyt_chromo_on_max_sim_clahe['chromo_id']}-{kyt_chromo_on_max_sim_clahe['pos']} 最匹配,特征点相似度:{sim_score:.2f}%;颠倒?{upside_down_clahe}"
                         )
+                        new_err = {
+                            "标本编号": case_id,
+                            "图号": img_id,
+                            "错误说明": f"AI染色体:{cur_chromo_id}-{cur_ai_chromo['pos']} 极性错误",
+                            "轮廓差异度": "不适用",
+                            "特征点相似度": f"{sim_score:.2f}%",
+                            "错误个数": 1,
+                            "错误类型": "极性",
+                        }
+                        err_df = pd.concat(
+                            [err_df, pd.DataFrame([new_err])], ignore_index=True
+                        )
                     # 为了提供评估效率，一旦找到最佳匹配的报告图染色体，就不再用其他方法就行匹配了
                     ai_correct_cnt_per_kyt += 1 if upside_down_clahe is False else 0
                     continue
@@ -378,6 +415,18 @@ for case_pic_dir in case_pic_dirs:
                         log.info(
                             f"AI染色体:{cur_chromo_id}-{cur_ai_chromo['pos']} 同报告图中的染色体: {kyt_chromo_on_max_sim_ori['chromo_id']}-{kyt_chromo_on_max_sim_ori['pos']} 最匹配,特征点相似度:{sim_score:.2f}%;颠倒?{upside_down_ori}"
                         )
+                        new_err = {
+                            "标本编号": case_id,
+                            "图号": img_id,
+                            "错误说明": f"AI染色体:{cur_chromo_id}-{cur_ai_chromo['pos']} 极性错误",
+                            "轮廓差异度": "不适用",
+                            "特征点相似度": f"{sim_score:.2f}%",
+                            "错误个数": 1,
+                            "错误类型": "极性",
+                        }
+                        err_df = pd.concat(
+                            [err_df, pd.DataFrame([new_err])], ignore_index=True
+                        )
                     # 为了提供评估效率，一旦找到最佳匹配的报告图染色体，就不再用其他方法就行匹配了
                     ai_correct_cnt_per_kyt += 1 if upside_down_ori is False else 0
                     continue
@@ -394,6 +443,18 @@ for case_pic_dir in case_pic_dirs:
                         upside_down = upside_down_ori
                     log.info(
                         f"AI染色体:{cur_chromo_id}-{cur_ai_chromo['pos']} 同报告图中的染色体: {best_feature_match_kyt_chromo['chromo_id']}-{best_feature_match_kyt_chromo['pos']} 最匹配,特征点相似度:{sim_score:.2f}%;颠倒?{upside_down}"
+                    )
+                    new_err = {
+                        "标本编号": case_id,
+                        "图号": img_id,
+                        "错误说明": f"AI判定的{cur_chromo_id}号-位置{cur_ai_chromo['pos']}的染色体，应为报告图中{best_feature_match_kyt_chromo['chromo_id']}号染色体(位置:{best_feature_match_kyt_chromo['pos']})",
+                        "轮廓差异度": "不适用",
+                        "特征点相似度": f"{sim_score:.2f}%",
+                        "错误个数": 1,
+                        "错误类型": "识别",
+                    }
+                    err_df = pd.concat(
+                        [err_df, pd.DataFrame([new_err])], ignore_index=True
                     )
                 except Exception as e:  # pylint: disable=broad-except
                     log.error(
@@ -425,11 +486,31 @@ for case_pic_dir in case_pic_dirs:
             log.info(
                 f"AI推理结果中缺少{len(cur_kyt_chromos) - len(cur_ai_chromos)}条{cur_chromo_id}号染色体"
             )
+            new_err = {
+                "标本编号": case_id,
+                "图号": img_id,
+                "错误说明": f"AI缺少{len(cur_kyt_chromos) - len(cur_ai_chromos)}条{cur_chromo_id}号染色体",
+                "轮廓差异度": "不适用",
+                "特征点相似度": "不适用",
+                "错误个数": len(cur_kyt_chromos) - len(cur_ai_chromos),
+                "错误类型": "识别",
+            }
+            err_df = pd.concat([err_df, pd.DataFrame([new_err])], ignore_index=True)
         elif len(cur_ai_chromos) > len(cur_kyt_chromos):
             # 多出染色体的情况
             log.info(
                 f"AI推理结果中多出{len(cur_ai_chromos) - len(cur_kyt_chromos)}条{cur_chromo_id}号染色体"
             )
+            new_err = {
+                "标本编号": case_id,
+                "图号": img_id,
+                "错误说明": f"AI多出{len(cur_ai_chromos) - len(cur_kyt_chromos)}条{cur_chromo_id}号染色体",
+                "轮廓差异度": "不适用",
+                "特征点相似度": "不适用",
+                "错误个数": len(cur_ai_chromos) - len(cur_kyt_chromos),
+                "错误类型": "识别",
+            }
+            err_df = pd.concat([err_df, pd.DataFrame([new_err])], ignore_index=True)
         else:
             # 染色体数量一致的情况
             # log.info(
@@ -466,6 +547,12 @@ ai_correct_ratio_avg = (
 log.info(
     f"所有案例下的报告图评估完毕。AI推理的平均准确率为 {ai_correct_ratio_avg:.2f}%"
 )
+
+# 保存错误结果
+err_df_fp = os.path.join(
+    EVA_RESULT_DIR, f"err_result_{time.strftime('%Y%m%d%H%M%S')}.xlsx"
+)
+err_df.to_excel(err_df_fp, index=False)
 
 # # 保存评估结果
 # # 保存评估结果的文件名为eva_result_开头后面接当前时间

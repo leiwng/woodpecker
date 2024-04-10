@@ -10,6 +10,7 @@
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "cSpell.words": [
+        "arcname",
         "CLAHE",
         "cntr",
         "cntrs",
@@ -36,10 +37,5 @@
         "Thresholding",
         "tofile"
     ],
-    "pylint.args": ["--generated-members=cv2.*", "--disable=W0621"],
-    "flake8.args": [
-        // "--ignore=E24,E128,E201,E202,E225,E231,E252,E265,E302,E303,E401,E402,E501,E731,W504,W605",
-        "--ignore=E501",
-        "--verbose"
-    ]
+    "pylint.args": ["--generated-members=cv2.*", "--disable=W0621", "--max-line-length=120"]
 }

@@ -118,24 +118,14 @@ def feature_match_on_roi_for_flips(query_roi, target_roi):
         mutually_upside_down_pts_amt = 0
         for matched_pt in matched_pts:
             query_pt, target_pt = matched_pt
-            if (
-                query_pt[1] < query_roi_height_half
-                and target_pt[1] > target_roi_height_half
-            ):
+            if query_pt[1] < query_roi_height_half and target_pt[1] > target_roi_height_half:
                 mutually_upside_down_pts_amt += 1
-            elif (
-                query_pt[1] > query_roi_height_half
-                and target_pt[1] < target_roi_height_half
-            ):
+            elif query_pt[1] > query_roi_height_half and target_pt[1] < target_roi_height_half:
                 mutually_upside_down_pts_amt += 1
             else:
                 continue
         mutually_upside_down = mutually_upside_down_pts_amt / pts_amt > 0.5
-        upside_down = (
-            mutually_upside_down
-            if max_sim_flip_idx in [0, 2]
-            else not mutually_upside_down
-        )
+        upside_down = mutually_upside_down if max_sim_flip_idx in [0, 2] else not mutually_upside_down
     else:
         upside_down = False
 
@@ -187,12 +177,11 @@ def best_shape_match_for_chromos(query_chromo, target_chromos):
     Returns:
         int: 最佳形状差异度, 最佳匹配的目标染色体
     """
+
     diff_score_min = 999999
     target_chromo_on_min = None
     for target_chromo in target_chromos:
-        diff_score = cv2.matchShapes(
-            query_chromo["cntr"], target_chromo["cntr"], cv2.CONTOURS_MATCH_I3, 0.0
-        )
+        diff_score = cv2.matchShapes(query_chromo["cntr"], target_chromo["cntr"], cv2.CONTOURS_MATCH_I3, 0.0)
         if diff_score < diff_score_min:
             diff_score_min = diff_score
             target_chromo_on_min = target_chromo
@@ -253,9 +242,7 @@ def cv_imread(file_path):
     Returns:
         _type_: _description_
     """
-    return cv2.imdecode(
-        np.fromfile(file_path, dtype=np.uint8), cv2.IMREAD_UNCHANGED
-    )  # 前值 cv2.IMREAD_COLOR
+    return cv2.imdecode(np.fromfile(file_path, dtype=np.uint8), cv2.IMREAD_UNCHANGED)  # 前值 cv2.IMREAD_COLOR
 
 
 def cv_imwrite(file_path, img):
@@ -289,9 +276,7 @@ def merge_two_contours(contour1, contour2):
     return np.insert(contour2, contour2_nearest_point_idx, reorganized_contour1, axis=0)
 
 
-def merge_two_contours_by_npi(
-    contour1, contour2, contour1_nearest_point_idx, contour2_nearest_point_idx
-):
+def merge_two_contours_by_npi(contour1, contour2, contour1_nearest_point_idx, contour2_nearest_point_idx):
     """
     Merge two contours into one, by the nearest points index.
     "npi" means "nearest point index" of a contour.
@@ -329,9 +314,7 @@ def contour_closest_to_which_contour(given_contour, contours):
     nearest_point_idx_on_given_contour = 0
     nearest_point_idx_on_closest_contour = 0
     for idx, cnt in enumerate(contours):
-        distance, src_idx, dst_idx = get_distance_between_two_contours(
-            given_contour, cnt
-        )
+        distance, src_idx, dst_idx = get_distance_between_two_contours(given_contour, cnt)
         if distance < min_distance:
             min_distance = distance
             closest_contour_idx = idx
@@ -553,9 +536,7 @@ def normalization_for_ikaros_style(img, norm_alpha, norm_beta):
         Image (numpy ndarray): 处理后的贴近Ikaros风格图片
     """
     # normalize
-    norm_img = cv2.normalize(
-        img, dst=None, alpha=norm_alpha, beta=norm_beta, norm_type=cv2.NORM_MINMAX
-    )
+    norm_img = cv2.normalize(img, dst=None, alpha=norm_alpha, beta=norm_beta, norm_type=cv2.NORM_MINMAX)
 
     odd_pixels = np.where((norm_img[:, :, 0] % 2 == 1) & (norm_img[:, :, 0] < 255))
     norm_img[odd_pixels] = norm_img[odd_pixels] + [1, 1, 1]
@@ -799,22 +780,15 @@ def find_external_contours_en(
 
     if bin_thresh is not None and bin_thresh >= 0:
         # 直接使用指定阈值bin_thresh进行二值化
-        dst_bin_thresh, bin_img = cv2.threshold(
-            gray_img, bin_thresh, 255, cv2.THRESH_BINARY_INV
-        )
+        dst_bin_thresh, bin_img = cv2.threshold(gray_img, bin_thresh, 255, cv2.THRESH_BINARY_INV)
     elif bin_thresh == -1:
         # 使用自适应阈值进行二值化
-        if (
-            bin_type == cv2.THRESH_BINARY_INV + cv2.THRESH_TRIANGLE
-            and bin_thresh_adjustment != 0
-        ):
+        if bin_type == cv2.THRESH_BINARY_INV + cv2.THRESH_TRIANGLE and bin_thresh_adjustment != 0:
             tmp_bin_thresh, _ = cv2.threshold(gray_img, 0, 255, bin_type)
             tmp_bin_thresh = tmp_bin_thresh + bin_thresh_adjustment
             if tmp_bin_thresh < 0:
                 tmp_bin_thresh = 10
-            dst_bin_thresh, bin_img = cv2.threshold(
-                gray_img, tmp_bin_thresh, 255, cv2.THRESH_BINARY_INV
-            )
+            dst_bin_thresh, bin_img = cv2.threshold(gray_img, tmp_bin_thresh, 255, cv2.THRESH_BINARY_INV)
         else:
             dst_bin_thresh, bin_img = cv2.threshold(gray_img, 0, 255, bin_type)
     else:
@@ -1133,9 +1107,7 @@ def crop_img_from_mask(ori_img, mask_img, bin_thresh=240):
     mask_contours = find_external_contours(new_mask_img)
 
     if len(mask_contours) == 0:
-        raise (
-            ValueError("FUNC: crop_img_from_mask, can not find contours in mask_img")
-        )
+        raise (ValueError("FUNC: crop_img_from_mask, can not find contours in mask_img"))
 
     chromo_contour_in_ori = mask_contours[0]
     min_area_rect = cv2.minAreaRect(chromo_contour_in_ori)
@@ -1158,34 +1130,22 @@ def crop_img_from_mask(ori_img, mask_img, bin_thresh=240):
     img_h, img_w = white_bk_chromo_img.shape[:2]
 
     # 扩大画布,新的宽高，radians(angle) 把角度转为弧度 sin(弧度)
-    new_h = int(
-        img_w * fabs(sin(radians(cnt_angle))) + img_h * fabs(cos(radians(cnt_angle)))
-    )
-    new_w = int(
-        img_h * fabs(sin(radians(cnt_angle))) + img_w * fabs(cos(radians(cnt_angle)))
-    )
+    new_h = int(img_w * fabs(sin(radians(cnt_angle))) + img_h * fabs(cos(radians(cnt_angle))))
+    new_w = int(img_h * fabs(sin(radians(cnt_angle))) + img_w * fabs(cos(radians(cnt_angle))))
 
     # 旋转阵平移
     M[0, 2] += (new_w - img_w) / 2
     M[1, 2] += (new_h - img_h) / 2
 
     # 旋转
-    rotated_chromo_img = cv2.warpAffine(
-        white_bk_chromo_img, M, (new_w, new_h), borderValue=ori_img_bkg_color
-    )
-    rotated_mask_img = cv2.warpAffine(
-        new_mask_img, M, (new_w, new_h), borderValue=[0, 0, 0]
-    )
+    rotated_chromo_img = cv2.warpAffine(white_bk_chromo_img, M, (new_w, new_h), borderValue=ori_img_bkg_color)
+    rotated_mask_img = cv2.warpAffine(new_mask_img, M, (new_w, new_h), borderValue=[0, 0, 0])
 
     # 求旋转后的轮廓,这个求轮廓一定是用mask图,用chromo图在某些情况下会出两个轮廓
     # 主要原因是原图求轮廓会二值化,二值化后浅色区域会全白,造成染色体被割断
     new_contours = find_external_contours(rotated_mask_img)
     if len(new_contours) > 1:
-        new_contours = [
-            cnt
-            for cnt in new_contours
-            if cv2.contourArea(cnt) > SMALL_CONTOUR_AREA_OF_CHROMO
-        ]
+        new_contours = [cnt for cnt in new_contours if cv2.contourArea(cnt) > SMALL_CONTOUR_AREA_OF_CHROMO]
 
     # 把染色体抠出来形成小图
     new_contour = new_contours[0]
@@ -1378,9 +1338,7 @@ def chromo_stand_up_thru_skeleton(img, dbg=False):
     sk_h, sk_w = smoothy_sk.shape[:2]
     sk_pts = []
     for row in range(sk_h):
-        sk_pts.extend(
-            [col, row] for col in range(sk_w) if smoothy_sk[row][col].any() != 0
-        )
+        sk_pts.extend([col, row] for col in range(sk_w) if smoothy_sk[row][col].any() != 0)
 
     # get blur for distance calculation
     # gauss4dist = cv2.GaussianBlur(bgr_wb, (3, 3), 0)
@@ -1421,11 +1379,7 @@ def chromo_stand_up_thru_skeleton(img, dbg=False):
     # 判断着丝粒在上半部分还是下半部分
     h = bgr_wb.shape[0]
     if min_dist_pt[1] > h // 2:
-        return (
-            (cv2.flip(img, 0), smoothy_sk, src_with_cnt_sk_img, True)
-            if dbg
-            else (cv2.flip(img, 0), True)
-        )
+        return (cv2.flip(img, 0), smoothy_sk, src_with_cnt_sk_img, True) if dbg else (cv2.flip(img, 0), True)
 
     return (img, smoothy_sk, src_with_cnt_sk_img, False) if dbg else (img, False)
 
@@ -1444,9 +1398,7 @@ def _remove_metafer_label_zone(img, label_zone_h, label_zone_w):
         numpy ndarray: 去掉左上角图号标签区域后的图像
     """
     dst_img = img.copy()
-    dst_img[0:label_zone_h, 0:label_zone_w] = dst_img[
-        label_zone_h : label_zone_h * 2, label_zone_w : label_zone_w * 2
-    ]
+    dst_img[0:label_zone_h, 0:label_zone_w] = dst_img[label_zone_h : label_zone_h * 2, label_zone_w : label_zone_w * 2]
     return dst_img
 
 
@@ -1471,17 +1423,13 @@ def _chk_up_border_width(img, border_color1=None, border_color2=None):
     up_border = 0
     sequence_continue = False
     for y in range(img_h):
-        if y == 0 and (
-            (img[y][up_middle_x] == border_color1).all()
-            or (img[y][up_middle_x] == border_color2).all()
-        ):
+        if y == 0 and ((img[y][up_middle_x] == border_color1).all() or (img[y][up_middle_x] == border_color2).all()):
             up_border += 1
             sequence_continue = True
             continue
 
         if sequence_continue and (
-            (img[y][up_middle_x] == border_color1).all()
-            or (img[y][up_middle_x] == border_color2).all()
+            (img[y][up_middle_x] == border_color1).all() or (img[y][up_middle_x] == border_color2).all()
         ):
             up_border += 1
             sequence_continue = True
@@ -1515,16 +1463,14 @@ def _chk_right_border_width(img, border_color1=None, border_color2=None):
     sequence_continue = False
     for x in reversed(range(img_w)):
         if x == img_w - 1 and (
-            (img[right_middle_y][x] == border_color1).all()
-            or (img[right_middle_y][x] == border_color2).all()
+            (img[right_middle_y][x] == border_color1).all() or (img[right_middle_y][x] == border_color2).all()
         ):
             right_border += 1
             sequence_continue = True
             continue
 
         if sequence_continue and (
-            (img[right_middle_y][x] == border_color1).all()
-            or (img[right_middle_y][x] == border_color2).all()
+            (img[right_middle_y][x] == border_color1).all() or (img[right_middle_y][x] == border_color2).all()
         ):
             right_border += 1
             sequence_continue = True
@@ -1558,16 +1504,14 @@ def _chk_down_border_width(img, border_color1=None, border_color2=None):
     sequence_continue = False
     for y in reversed(range(img_h)):
         if y == img_h - 1 and (
-            (img[y][down_middle_x] == border_color1).all()
-            or (img[y][down_middle_x] == border_color2).all()
+            (img[y][down_middle_x] == border_color1).all() or (img[y][down_middle_x] == border_color2).all()
         ):
             down_border += 1
             sequence_continue = True
             continue
 
         if sequence_continue and (
-            (img[y][down_middle_x] == border_color1).all()
-            or (img[y][down_middle_x] == border_color2).all()
+            (img[y][down_middle_x] == border_color1).all() or (img[y][down_middle_x] == border_color2).all()
         ):
             down_border += 1
             sequence_continue = True
@@ -1601,16 +1545,14 @@ def _chk_left_border_width(img, border_color1=None, border_color2=None):
     sequence_continue = False
     for x in range(img_w):
         if x == 0 and (
-            (img[left_middle_y][x] == border_color1).all()
-            or (img[left_middle_y][x] == border_color2).all()
+            (img[left_middle_y][x] == border_color1).all() or (img[left_middle_y][x] == border_color2).all()
         ):
             left_border += 1
             sequence_continue = True
             continue
 
         if sequence_continue and (
-            (img[left_middle_y][x] == border_color1).all()
-            or (img[left_middle_y][x] == border_color2).all()
+            (img[left_middle_y][x] == border_color1).all() or (img[left_middle_y][x] == border_color2).all()
         ):
             left_border += 1
             sequence_continue = True
@@ -1651,16 +1593,12 @@ def remove_metafer_img_border(img, border_color1=None, border_color2=None):
     left_border = _chk_left_border_width(dst_img, border_color1, border_color2)
 
     # 裁去边
-    dst_img = dst_img[
-        up_border : img_h - down_border, left_border : img_w - right_border
-    ]
+    dst_img = dst_img[up_border : img_h - down_border, left_border : img_w - right_border]
 
     return dst_img
 
 
-def metafer_img_clean(
-    img, label_zone_h, label_zone_w, border_color1=None, border_color2=None
-):
+def metafer_img_clean(img, label_zone_h, label_zone_w, border_color1=None, border_color2=None):
     """去掉Metafer导出原图的黑白边框和图号标签区域
 
     Args:
@@ -1708,9 +1646,9 @@ def _isCellLikeCircle(
     minECArea = pi * (radius**2)
     circle_ratio = area / minECArea
 
-    return (
-        area < small_contour_area and circle_ratio > circle_ratio_for_small_contour
-    ) or (area >= small_contour_area and circle_ratio > circle_ratio_for_big_contour)
+    return (area < small_contour_area and circle_ratio > circle_ratio_for_small_contour) or (
+        area >= small_contour_area and circle_ratio > circle_ratio_for_big_contour
+    )
 
 
 # 判断轮廓是否触及图片边界
@@ -1784,9 +1722,7 @@ def closing(img, kernel=None, iterations=1):
     return cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel, iterations=iterations)
 
 
-def patch_to_bigger_canvas(
-    img, canvas_shape=(224, 224, 3), canvas_color=(255, 255, 255)
-):
+def patch_to_bigger_canvas(img, canvas_shape=(224, 224, 3), canvas_color=(255, 255, 255)):
     """将图片放到更大的画布上据中显示
     Args:
         img (numpy ndarray): 原图
@@ -1894,9 +1830,7 @@ def img_size_convertor(img, size):
     elif src_h < dst_h:
         up_wrap_width = (dst_h - src_h) // 2
         down_wrap_width = dst_h - src_h - up_wrap_width
-        dst_img = cv2.copyMakeBorder(
-            dst_img, up_wrap_width, down_wrap_width, 0, 0, cv2.BORDER_REPLICATE
-        )
+        dst_img = cv2.copyMakeBorder(dst_img, up_wrap_width, down_wrap_width, 0, 0, cv2.BORDER_REPLICATE)
 
     if src_w > dst_w:
         left_cut_width = (src_w - dst_w) // 2
@@ -1905,9 +1839,7 @@ def img_size_convertor(img, size):
     elif src_w < dst_w:
         left_wrap_width = (dst_w - src_w) // 2
         right_wrap_width = dst_w - src_w - left_wrap_width
-        dst_img = cv2.copyMakeBorder(
-            dst_img, 0, 0, left_wrap_width, right_wrap_width, cv2.BORDER_REPLICATE
-        )
+        dst_img = cv2.copyMakeBorder(dst_img, 0, 0, left_wrap_width, right_wrap_width, cv2.BORDER_REPLICATE)
 
     return dst_img
 
@@ -1929,13 +1861,9 @@ def img_size_convertor_with_all_contours_kept(img, size, contours):
         return img
 
     if src_h <= dst_h and src_w <= dst_w:
-        return patch_to_bigger_canvas(
-            img, canvas_shape=(dst_h, dst_w, 3), canvas_color=(255, 255, 255)
-        )
+        return patch_to_bigger_canvas(img, canvas_shape=(dst_h, dst_w, 3), canvas_color=(255, 255, 255))
 
-    (min_y, max_y, min_x, max_x) = get_bounding_rect_for_contours(
-        contours, img.shape[:2]
-    )
+    (min_y, max_y, min_x, max_x) = get_bounding_rect_for_contours(contours, img.shape[:2])
     new_img = img[min_y:max_y, min_x:max_x]
     new_img_h = max_y - min_y + 1
     new_img_w = max_x - min_x + 1
@@ -1944,9 +1872,7 @@ def img_size_convertor_with_all_contours_kept(img, size, contours):
         return new_img
 
     if new_img_h <= dst_h and new_img_w <= dst_w:
-        return patch_to_bigger_canvas(
-            new_img, canvas_shape=(dst_h, dst_w, 3), canvas_color=(255, 255, 255)
-        )
+        return patch_to_bigger_canvas(new_img, canvas_shape=(dst_h, dst_w, 3), canvas_color=(255, 255, 255))
 
     if (new_img_h / dst_h) > (new_img_w / dst_w):
         new_img_w = int(new_img_w * dst_h / new_img_h)
@@ -1956,9 +1882,7 @@ def img_size_convertor_with_all_contours_kept(img, size, contours):
         new_img_w = dst_w
 
     new_img = cv2.resize(new_img, (new_img_w, new_img_h))
-    return patch_to_bigger_canvas(
-        new_img, canvas_shape=(dst_h, dst_w, 3), canvas_color=(255, 255, 255)
-    )
+    return patch_to_bigger_canvas(new_img, canvas_shape=(dst_h, dst_w, 3), canvas_color=(255, 255, 255))
 
 
 class Metaphaser:
@@ -2112,42 +2036,28 @@ class Metaphaser:
         # 二值化
         # 获取自适应的二值化阈值
         if self.bin_thresh_calib_param == 0:
-            self.bin_thresh, bin_img = cv2.threshold(
-                gray_img, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_TRIANGLE
-            )
+            self.bin_thresh, bin_img = cv2.threshold(gray_img, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_TRIANGLE)
         else:
-            bin_thresh, _ = cv2.threshold(
-                gray_img, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_TRIANGLE
-            )
+            bin_thresh, _ = cv2.threshold(gray_img, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_TRIANGLE)
             # 对二值化阈值再次进行校准
             if bin_thresh - self.bin_thresh_calib_param > 0:
                 self.bin_thresh = bin_thresh - self.bin_thresh_calib_param
             else:
                 self.bin_thresh = bin_thresh
 
-            _, bin_img = cv2.threshold(
-                gray_img, self.bin_thresh, 255, cv2.THRESH_BINARY_INV
-            )
+            _, bin_img = cv2.threshold(gray_img, self.bin_thresh, 255, cv2.THRESH_BINARY_INV)
 
         # 开运算,去背景噪点
-        bin_open_img = opening(
-            bin_img, kernel=self.open_kernel, iterations=self.open_iterations
-        )
+        bin_open_img = opening(bin_img, kernel=self.open_kernel, iterations=self.open_iterations)
 
         # 闭运算,去染色体内穿孔
-        bin_open_close_img = closing(
-            bin_open_img, kernel=self.close_kernel, iterations=self.close_iterations
-        )
+        bin_open_close_img = closing(bin_open_img, kernel=self.close_kernel, iterations=self.close_iterations)
 
         # 找轮廓
-        contours = cv2.findContours(
-            bin_open_close_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
-        )[0]
+        contours = cv2.findContours(bin_open_close_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
 
         # 去杂质微小轮廓
-        contours = [
-            cnt for cnt in contours if cv2.contourArea(cnt) > self.tiny_contour_area
-        ]
+        contours = [cnt for cnt in contours if cv2.contourArea(cnt) > self.tiny_contour_area]
 
         # 去细胞
         contours = [
@@ -2163,11 +2073,7 @@ class Metaphaser:
 
         # 去接触边界的大轮廓
         contours = [
-            cnt
-            for cnt in contours
-            if not _isNoneChromoObjTouchBorder(
-                bin_open_close_img.shape, cnt, self.border_width
-            )
+            cnt for cnt in contours if not _isNoneChromoObjTouchBorder(bin_open_close_img.shape, cnt, self.border_width)
         ]
         # contours = [
         #     cnt
@@ -2178,10 +2084,7 @@ class Metaphaser:
         # 轮廓平滑
         if self.contour_smoothy:
             contours = [
-                cv2.approxPolyDP(
-                    cnt, self.contour_smoothy_param * cv2.arcLength(cnt, True), True
-                )
-                for cnt in contours
+                cv2.approxPolyDP(cnt, self.contour_smoothy_param * cv2.arcLength(cnt, True), True) for cnt in contours
             ]
 
         # 生成有效轮廓掩码图
@@ -2195,33 +2098,23 @@ class Metaphaser:
         # 规定化
         # 自适应直方图均衡+归一化
         if self.normalization:
-            dst_img = normalization_with_contours_mask(
-                dst_img, contours, self.norm_alpha, self.norm_beta
-            )
+            dst_img = normalization_with_contours_mask(dst_img, contours, self.norm_alpha, self.norm_beta)
 
         # 规定化
         # 染色体放大
-        if (
-            self.chromo_size_gain != 1
-            and self.chromo_size_gain > 0
-            and self.chromo_size_gain < 4
-        ):
+        if self.chromo_size_gain != 1 and self.chromo_size_gain > 0 and self.chromo_size_gain < 4:
             (h, w) = dst_img.shape[:2]
             gain = self.chromo_size_gain
             dst_img = cv2.resize(dst_img, (round(w * gain), round(h * gain)))
 
         # img just fit for all chromosomes
         if self.just_fit_all_chromo_or_not:
-            (min_y, max_y, min_x, max_x) = get_bounding_rect_for_contours(
-                contours, dst_img.shape[:2]
-            )
+            (min_y, max_y, min_x, max_x) = get_bounding_rect_for_contours(contours, dst_img.shape[:2])
             dst_img = dst_img[min_y:max_y, min_x:max_x]
         elif self.img_size_norm_or_not:
             # 规定化
             # 变换图片尺寸
-            dst_img = img_size_convertor_with_all_contours_kept(
-                dst_img, (self.meta_img_h, self.meta_img_w), contours
-            )
+            dst_img = img_size_convertor_with_all_contours_kept(dst_img, (self.meta_img_h, self.meta_img_w), contours)
 
         if self.dbg:
             cv2.drawContours(dst_img, contours, -1, (255, 0, 0), 1)
