@@ -19,14 +19,14 @@ __status__ = "Development"
 
 
 import time
-from evaluate_ai_result_logger import log
+from ai_eval_logger import log
 
 NEW_LINE = "\n"
 
 
 class TimeLogger:
-    """Used to log process time of every step
-    """
+    """Used to log process time of every step"""
+
     def __init__(self, outside_logger=log, case_total_cnt=0):
         self.st = time.time()
         self.case_total = case_total_cnt
@@ -66,8 +66,7 @@ class TimeLogger:
         self.estimate_end_time("End of all cases estimated on: ")
 
     def all_finished(self):
-        """calculate the average cost of all cases and log the end time of all cases
-        """
+        """calculate the average cost of all cases and log the end time of all cases"""
         self.et = time.time()
         self.avg_cost = (self.et - self.st) / self.processed
 
@@ -99,9 +98,7 @@ class TimeLogger:
         Args:
             arg1 (_type_): _description_
         """
-        estimated_end_time = self.case_et + (
-            self.avg_cost * (self.case_total - self.processed)
-        )
+        estimated_end_time = self.case_et + (self.avg_cost * (self.case_total - self.processed))
 
         local_t = time.localtime(estimated_end_time)
         f_local_t = time.strftime("%Y-%m-%d %H:%M:%S", local_t)

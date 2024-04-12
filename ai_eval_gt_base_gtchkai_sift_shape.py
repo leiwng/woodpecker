@@ -44,8 +44,8 @@ from utils.chromo_cv_utils import (
     feature_match_on_roi_for_flips,
     best_feature_match_for_chromos,
 )
-from evaluate_ai_result_logger import Logger
-from evaluate_ai_result_time_logger import TimeLogger
+from ai_eval_logger import Logger
+from ai_eval_time_logger import TimeLogger
 
 
 def get_chromo_info_from_result_dir(result_dir_fp: str):
@@ -121,18 +121,20 @@ def get_chromo_info_from_result_dir(result_dir_fp: str):
 
 if __name__ == "__main__":
 
-    EVA_ROOT_DIR = (
-        r"E:\染色体测试数据\240407-评估AI准确性_绵阳妇幼在标注系统中L2403090001.001_L2403120008.040_完成_共890张图"
-    )
-
     # 标准答案
     GROUND_TRUTH_ROOT_DIR = r"E:\染色体测试数据\240407-评估AI准确性_绵阳妇幼在标注系统中L2403090001.001_L2403120008.040_完成_共890张图\GROUND_TRUTH"
-
     # AI推理结果的根目录
     AI_RESULT_ROOT_DIR = r"E:\染色体测试数据\240407-评估AI准确性_绵阳妇幼在标注系统中L2403090001.001_L2403120008.040_完成_共890张图\AI_RESULT"
-
     # 保存评估结果保存的目录
     EVA_RESULT_DIR = r"E:\染色体测试数据\240407-评估AI准确性_绵阳妇幼在标注系统中L2403090001.001_L2403120008.040_完成_共890张图\EVA_RESULT"
+
+    # # 测试
+    # # 标准答案
+    # GROUND_TRUTH_ROOT_DIR = r"E:\染色体测试数据\tmp\240410-快速测试\GROUND_TRUTH"
+    # # AI推理结果的根目录
+    # AI_RESULT_ROOT_DIR = r"E:\染色体测试数据\tmp\240410-快速测试\AI_RESULT"
+    # # 保存评估结果保存的目录
+    # EVA_RESULT_DIR = r"E:\染色体测试数据\tmp\240410-快速测试\EVA_RESULT"
 
     # 初始化日志
     # LogPath = Path(__file__).resolve().parent
@@ -272,7 +274,57 @@ if __name__ == "__main__":
                 # 逐一处理当前编号下的每条kyt染色体
                 for cur_kyt_chromo in cur_kyt_chromos:
 
-                    # 先用matchShapes方法匹配AI染色体
+                    # 先用SIFT方法匹配
+                    try:
+
+                        (
+                            sift_sim_score,
+                            best_sift_match_ai_chromo,
+                            _,
+                            upside_down,
+                        ) = best_feature_match_for_chromos(cur_kyt_chromo, ai_chromo_result)
+                        # 如果SIFT方法匹配的最佳匹配染色体同kyt染色体编号一致，就认为AI推理结果正确
+                        if best_sift_match_ai_chromo is not None and best_sift_match_ai_chromo["id"] == cur_chromo_id:
+
+                            # 通过SIFT特征点BFMatcher匹配的AI染色体同kyt染色体的编号一致，认为AI推理结果正确
+                            # 下面需要判断AI推理的染色体是否颠倒
+                            if upside_down:
+                                log.info(
+                                    f"AI{best_sift_match_ai_chromo['id']}号染色体颠倒。位置: {best_sift_match_ai_chromo['pos']}。"
+                                )
+                                new_err = {
+                                    "标本编号": case_id,
+                                    "图号": img_id,
+                                    "错误说明": f"AI{best_sift_match_ai_chromo['id']}号染色体颠倒。位置: {best_sift_match_ai_chromo['pos']}。",
+                                    "轮廓差异度": f"{shape_diff_score:.2f}%",
+                                    "特征点相似度": f"{sift_sim_score:.2f}%",
+                                    "错误个数": 1,
+                                    "错误类型": "极性",
+                                }
+                                err_df = pd.concat(
+                                    [err_df, pd.DataFrame([new_err])],
+                                    ignore_index=True,
+                                )
+                            else:
+                                # 对正确的匹配进行计数
+                                ai_correct_cnt_per_kyt += 1
+
+                            # SIFT方法匹配的最佳匹配染色体同kyt染色体编号一致，AI推理结果正确，
+                            # 不再使用其他方法匹配，直接跳过处理下一条染色体
+                            continue
+
+                    except Exception as e:
+
+                        log.error(
+                            f"计算kyt{cur_kyt_chromo['id']}号染色体同所有AI染色体进行SIFT相似度匹配时发生异常: {e}"
+                        )
+                        # 默认在终端打印异常, 默认颜色为红色
+                        traceback.print_exc()
+                        # 接收错误信息
+                        err = traceback.format_exc()
+                        log.error(err)
+
+                    # 后用matchShapes方法匹配AI染色体
                     shape_diff_score, best_shape_match_ai_chromo = best_shape_match_for_chromos(
                         cur_kyt_chromo, ai_chromo_result
                     )
@@ -323,44 +375,11 @@ if __name__ == "__main__":
                             print(err)
                             log.error(err)
 
-                        continue
-
-                    # 如果matchShapes方法匹配的最佳匹配染色体同kyt染色体编号不一致，那么就使用SIFT方法匹配
-                    try:
-
-                        (
-                            sift_sim_score,
-                            best_sift_match_ai_chromo,
-                            _,
-                            upside_down,
-                        ) = best_feature_match_for_chromos(cur_kyt_chromo, ai_chromo_result)
-                        # 如果SIFT方法匹配的最佳匹配染色体同kyt染色体编号一致，就认为AI推理结果正确
-                        if best_sift_match_ai_chromo is not None and best_sift_match_ai_chromo["id"] == cur_chromo_id:
-
-                            # 通过SIFT特征点BFMatcher匹配的AI染色体同kyt染色体的编号一致，认为AI推理结果正确
-                            # 下面需要判断AI推理的染色体是否颠倒
-                            if upside_down:
-                                log.info(
-                                    f"AI{best_sift_match_ai_chromo['id']}号染色体颠倒。位置: {best_sift_match_ai_chromo['pos']}。"
-                                )
-                                new_err = {
-                                    "标本编号": case_id,
-                                    "图号": img_id,
-                                    "错误说明": f"AI{best_sift_match_ai_chromo['id']}号染色体颠倒。位置: {best_sift_match_ai_chromo['pos']}。",
-                                    "轮廓差异度": f"{shape_diff_score:.2f}%",
-                                    "特征点相似度": f"{sift_sim_score:.2f}%",
-                                    "错误个数": 1,
-                                    "错误类型": "极性",
-                                }
-                                err_df = pd.concat(
-                                    [err_df, pd.DataFrame([new_err])],
-                                    ignore_index=True,
-                                )
-                            else:
-                                # 对正确的匹配进行计数
-                                ai_correct_cnt_per_kyt += 1
-                        else:
-                            # 如果SIFT方法匹配的最佳匹配染色体同kyt染色体编号不一致(不再使用CLAHE增强后的SIFT方法匹配)，那么就认为AI推理结果错误
+                    else:
+                        # 先用SIFT特征匹配，后用matchShapes方法匹配，都匹配不上，就认为AI推理结果错误
+                        # 匹配的染色体以SIFT方法匹配的结果为准
+                        # 有可能在上面的SIFT方法匹配中，发生异常根本就没有给best_sift_match_ai_chromo赋值，这里用try except保护起来
+                        try:
                             log.info(
                                 f"{cur_kyt_chromo['id']}号染色体被AI识别为{best_sift_match_ai_chromo['id']}号染色体。"
                             )
@@ -377,17 +396,33 @@ if __name__ == "__main__":
                                 [err_df, pd.DataFrame([new_err])],
                                 ignore_index=True,
                             )
+                        except Exception as e:
+                            log.error(
+                                f"{cur_kyt_chromo['id']}号染色体通过SIFT算法匹配AI染色体时发生异常: {e}。以shape匹配结果为准。"
+                            )
+                            traceback.print_exc()
+                            # 接收错误信息
+                            err = traceback.format_exc()  # pylint: disable=invalid-name
+                            print(err)
+                            log.error(err)
 
-                    except Exception as e:
-
-                        log.error(
-                            f"计算kyt{cur_kyt_chromo['id']}号染色体同所有AI{best_sift_match_ai_chromo['id']}染色体进行SIFT相似度匹配时发生异常: {e}"
-                        )
-                        # 默认在终端打印异常, 默认颜色为红色
-                        traceback.print_exc()
-                        # 接收错误信息
-                        err = traceback.format_exc()
-                        log.error(err)
+                            # SIFT匹配方法发生异常，以matchShapes方法匹配的结果为准
+                            log.info(
+                                f"{cur_kyt_chromo['id']}号染色体被AI识别为{best_shape_match_ai_chromo['id']}号染色体。"
+                            )
+                            new_err = {
+                                "标本编号": case_id,
+                                "图号": img_id,
+                                "错误说明": f"{cur_kyt_chromo['id']}号染色体被AI识别为{best_shape_match_ai_chromo['id']}号染色体。",
+                                "轮廓差异度": f"{shape_diff_score:.2f}%",
+                                "特征点相似度": "N/A",
+                                "错误个数": 1,
+                                "错误类型": "识别",
+                            }
+                            err_df = pd.concat(
+                                [err_df, pd.DataFrame([new_err])],
+                                ignore_index=True,
+                            )
 
         # 计算当前案例下该图的评估结果
         ai_correct_ratio_per_kyt = (
@@ -411,3 +446,7 @@ if __name__ == "__main__":
     # 所有案例下的所有报告图跑完了，计算平均准确率
     ai_correct_ratio_avg = ai_correct_ratio_for_all / case_pic_total if case_pic_total > 0 else 0
     log.info(f"所有案例下的报告图评估完毕。AI推理的平均准确率为 {ai_correct_ratio_avg:.2f}%")
+
+    # 保存错误结果
+    err_df_fp = os.path.join(EVA_RESULT_DIR, f"{CurrentFileName}_err_result_{time.strftime('%Y%m%d%H%M%S')}.xlsx")
+    err_df.to_excel(err_df_fp, index=False)
