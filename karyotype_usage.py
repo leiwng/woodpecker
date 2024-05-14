@@ -28,7 +28,9 @@ from utils.chromo_cv_utils import cv_imread, cv_imwrite
 # KYT_IMG_FP = 'D:\\Prj\\github\\woodpecker\\test\\test_img\\L2311245740.031.K.TIF'
 # KYT_IMG_FP = "E:\\染色体测试数据\\240129-用标准的报告图测试karyotpye.py\\300\\L2205277099.014.K.BMP"
 # KYT_IMG_FP = r"E:\染色体测试数据\240204-评估240202测试集AI推理结果\KYT_IMG\A2312269443.168.K.JPG"
-KYT_IMG_FP = r"E:\染色体测试数据\240204-评估240202测试集AI推理结果\KYT_IMG\A2312269453.253.K.JPG"
+# KYT_IMG_FP = r"E:\染色体测试数据\240204-评估240202测试集AI推理结果\KYT_IMG\A2312269453.253.K.JPG"
+KYT_IMG_FP = r"D:\users_dir\lei.wng@outlook.com\Downloads\20240514-104220.001.K.jpg"
+# KYT_IMG_FP = r"D:\users_dir\lei.wng@outlook.com\Downloads\20240514-103920.001.K.jpg"
 
 karyotype_chart = Karyotype(KYT_IMG_FP)
 karyotype_chart.read_karyotype()

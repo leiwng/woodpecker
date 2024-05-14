@@ -36,7 +36,8 @@ from utils.chromo_cv_utils import (
     find_external_contours,
     get_distance_between_two_contours,
     merge_two_contours_by_npi,
-    cv_imread
+    cv_imread,
+    cv_imwrite
 )
 
 
@@ -52,7 +53,6 @@ BIN_THRESH_DELTA = cfg.getint('General', 'BinThresholdDelta')
 # 轮廓中心距离图片边界的最大距离
 # MaxContourDistanceToBorder = 5
 MAX_CNTR_DISTANCE_TO_BORDER = cfg.getint('General', 'MaxContourDistanceToBorder')
-
 
 # 允许最小轮廓的面积: 20 MinContourArea = 20
 MIN_CNTR_AREA = cfg.getint('General', 'MinContourArea')
@@ -212,6 +212,22 @@ class Karyotype:
 
         # 判断key个数是否为4，不为4则报错
         if len(merged_id_cntr_dicts_orgby_cy) != 4:
+            # DEBUG
+            # print_info = deepcopy(merged_id_cntr_dicts_orgby_cy)
+            # for cntr_dicts_key, cntr_dicts in print_info.items():
+            #     print(f'cy:{cntr_dicts_key} - {len(cntr_dicts)}个染色体编号字符轮廓')
+            #     for cntr in cntr_dicts:
+            #         del cntr['cntr']
+            #         # del cntr['area']
+            #         # del cntr['rect']
+            #         # del cntr['min_area_rect']
+            #         # del cntr['cx']
+            #         # del cntr['cy']
+            #         # del cntr['bc_x']
+            #         # del cntr['bc_y']
+            #         # del cntr['bc_point']
+            # print(f'{self.img["fname"]} 染色体编号轮廓信息:{print_info}')
+            # END OF DEBUG
             raise ValueError(f'{self.img["fname"]} 染色体编号排的数量为{
                              len(merged_id_cntr_dicts_orgby_cy)},应该为4')
 
@@ -310,6 +326,53 @@ class Karyotype:
 
         # 去掉微小轮廓
         cntrs = [cntr for cntr in cntrs if cv2.contourArea(cntr) > MIN_CNTR_AREA]
+
+        # DEBUG
+        # canvas = self.img['img_src'].copy()
+        # for idx, cntr in enumerate(cntrs):
+        #     area = cv2.contourArea(cntr)
+        #     bbox = cv2.boundingRect(cntr)
+        #     x, y, w, h = bbox
+        #     bc_x = x + w // 2
+        #     bc_y = y + h
+        #     moments = cv2.moments(cntr)
+        #     if moments['m00'] != 0:
+        #         cx = int(moments['m10'] / moments['m00'])
+        #         cy = int(moments['m01'] / moments['m00'])
+        #     else:
+        #         ((cx, cy), (_,_), _) = cv2.minAreaRect(cntr)
+        #         cx = int(cx)
+        #         cy = int(cy)
+        #     cv2.drawContours(canvas, [cntr], -1, (0, 0, 255), 1)
+        #     x = cx
+        #     y = cy
+        #     if idx % 2 == 0:
+        #         cv2.putText(
+        #             canvas,
+        #             area.__str__(),
+        #             (x, y),
+        #             cv2.FONT_HERSHEY_SIMPLEX,
+        #             0.45,
+        #             (255, 0, 0),
+        #             1,
+        #         )
+        #     else:
+        #         cv2.putText(
+        #             canvas,
+        #             area.__str__(),
+        #             (x - 8, y + 20),
+        #             cv2.FONT_HERSHEY_SIMPLEX,
+        #             0.45,
+        #             (255, 0, 0),
+        #             1,
+        #         )
+
+        # KYT_IMG_FP = self.img['fp']
+        # kyt_img_dir, kyt_img_fn = os.path.split(KYT_IMG_FP)
+        # kyt_img_fbasename = os.path.splitext(kyt_img_fn)[0]
+        # net_img_fp = f"{os.path.join(kyt_img_dir, kyt_img_fbasename)}_id-on-cntr04.png"
+        # cv_imwrite(net_img_fp, canvas)
+        # END OF DEBUG
 
         # get all contours info
         self.cntr_dicts = [{} for _ in range(len(cntrs))]
