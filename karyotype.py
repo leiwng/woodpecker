@@ -616,7 +616,6 @@ class Karyotype:
         self.cntr_dicts[idx]["ori_cropped"] = ori_cropped  # bbox cropped from image
         self.cntr_dicts[idx]["gray_cropped"] = gray_cropped  # bbox cropped from image which grayed already
         self.cntr_dicts[idx]["wbg_cropped"] = wbg_cropped  # bbox cropped from img copy to white background
-        contours, _ = find_external_contours_en(gray_cropped, bin_thresh_adjustment=-7)
-        self.cntr_dicts[idx]["cropped_cntrs"] = contours
-)
         # get chromosome contour of cropped image
+        contours, _ = find_external_contours_en(gray_cropped, bin_thresh_adjustment=-5)
+        self.cntr_dicts[idx]["cropped_cntr"] = contours
