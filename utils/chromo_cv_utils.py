@@ -388,9 +388,9 @@ def contour_bbox_img(img, contour, padding=1):
     x, y, w, h = cv2.boundingRect(contour)
 
     # Crop the object with some padding, adjust padding as needed
-    padding = padding
-    gray_cropped = extracted[y - padding : y + h + padding, x - padding : x + w + padding]
-    ori_cropped = ori_img[y - padding : y + h + padding, x - padding : x + w + padding]
+    pad = padding
+    gray_cropped = extracted[y - pad : y + h + pad, x - pad : x + w + pad]
+    ori_cropped = ori_img[y - pad : y + h + pad, x - pad : x + w + pad]
 
     # make it white background
     wbg_cropped = np.full_like(gray_cropped, 255, dtype=np.uint8)
@@ -778,10 +778,7 @@ def find_external_contours_en(
         _type_: _description_
     """
     # 灰化
-    if len(img.shape) == 3:
-        gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    else:
-        gray_img = img
+    gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) if len(img.shape) == 3 else img
 
     if bin_thresh is not None and bin_thresh >= 0:
         # 直接使用指定阈值bin_thresh进行二值化

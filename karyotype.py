@@ -39,6 +39,8 @@ from utils.chromo_cv_utils import (
     merge_two_contours_by_npi,
     cv_imread,
     cv_imwrite,
+    contour_bbox_img,
+    find_external_contours_en,
 )
 
 
@@ -583,7 +585,8 @@ class Karyotype:
         # 3. 数据的排列格式是以cy为key的字典,每个cy对应的value是该cy行的所有的染色体轮廓信息
         #    类似于: {cy1:[{chromo_id:'1',chromo_idx:0,cx:100,cy:200,contour:[[x,y]]},...], cy2:[...], ...}
         self.chromo_cntr_dicts_orgby_cy = left_cntr_dicts_orgby_cy
-        self.chromo_cntr_dicts = [left_cntr_dicts_orgby_cy[key] for key in left_cntr_dicts_orgby_cy]
+        # self.chromo_cntr_dicts = [left_cntr_dicts_orgby_cy[key] for key in left_cntr_dicts_orgby_cy]
+        self.chromo_cntr_dicts = [item for item in left_cntr_dicts_orgby_cy[key] for key in left_cntr_dicts_orgby_cy]
 
         return deepcopy(self.chromo_cntr_dicts_orgby_cy)
 
@@ -608,3 +611,12 @@ class Karyotype:
             self.cntr_dicts[idx]["cx"] = int(cx)
             self.cntr_dicts[idx]["cy"] = int(cy)
         self.cntr_dicts[idx]["center"] = (self.cntr_dicts[idx]["cx"], self.cntr_dicts[idx]["cy"])
+        # single chromosome image
+        ori_cropped, gray_cropped, wbg_cropped = contour_bbox_img(self.img["img_src"], contour)
+        self.cntr_dicts[idx]["ori_cropped"] = ori_cropped  # bbox cropped from image
+        self.cntr_dicts[idx]["gray_cropped"] = gray_cropped  # bbox cropped from image which grayed already
+        self.cntr_dicts[idx]["wbg_cropped"] = wbg_cropped  # bbox cropped from img copy to white background
+        contours, _ = find_external_contours_en(gray_cropped, bin_thresh_adjustment=-7)
+        self.cntr_dicts[idx]["cropped_cntrs"] = contours
+)
+        # get chromosome contour of cropped image
